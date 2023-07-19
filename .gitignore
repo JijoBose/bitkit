@@ -87,7 +87,7 @@ android/app/pepk.jar
 # VSCode
 .vscode
 
-# tests
+# testing
 coverage/
 __tests__/bitcoin_datadir/
 __tests__/lnd/
