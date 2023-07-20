@@ -4,7 +4,7 @@ index eb6fbed..ae4d510 100644
 +++ b/node_modules/react-native-camera-kit/android/src/main/java/com/rncamerakit/CKCamera.kt
 @@ -178,11 +178,11 @@ class CKCamera(context: ThemedReactContext) : FrameLayout(context), LifecycleObs
              orientationListener!!.enable()
- 
+
              val scaleDetector =  ScaleGestureDetector(context, object: ScaleGestureDetector.SimpleOnScaleGestureListener() {
 -                override fun onScale(detector: ScaleGestureDetector?): Boolean {
 +                override fun onScale(detector: ScaleGestureDetector): Boolean {
