@@ -28,7 +28,6 @@ const NumberPadTextField = ({
 	onPress,
 }: {
 	value: string;
-	space?: number;
 	showPlaceholder?: boolean;
 	reverse?: boolean;
 	style?: StyleProp<ViewStyle>;
