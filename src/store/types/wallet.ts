@@ -26,25 +26,11 @@ export type TKeyDerivationChange = '0' | '1'; //"Receiving Address" | "Change Ad
 export type TKeyDerivationAddressIndex = string;
 export type TAssetType = 'bitcoin' | 'tether';
 
-export enum EBitcoinUnit {
-	satoshi = 'satoshi',
-	BTC = 'BTC',
-}
-
-export enum EBalanceUnit {
+export enum EUnit {
 	satoshi = 'satoshi',
 	BTC = 'BTC',
 	fiat = 'fiat',
 }
-
-export type TBitcoinAbbreviation = 'sats' | 'BTC';
-
-export type TBitcoinLabel =
-	| 'Bitcoin Mainnet'
-	| 'Bitcoin Testnet'
-	| 'Bitcoin Regtest';
-
-export type TTicker = 'BTC' | 'tBTC';
 
 export type TGetByteCountInput =
 	| `MULTISIG-P2SH:${number}-${number}`
@@ -88,6 +74,7 @@ export interface IAddressTypeData {
 	type: EAddressType;
 	path: string;
 	name: string;
+	shortName: string;
 	description: string;
 	example: string;
 }

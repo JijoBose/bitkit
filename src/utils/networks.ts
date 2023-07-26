@@ -71,6 +71,24 @@ export const networks: INetworks = {
 	},
 };
 
+export const networkLabels = {
+	[EAvailableNetworks.bitcoin]: {
+		id: EAvailableNetworks.bitcoin,
+		label: 'Bitcoin Mainnet',
+		shortLabel: 'Mainnet',
+	},
+	[EAvailableNetworks.bitcoinTestnet]: {
+		id: EAvailableNetworks.bitcoinTestnet,
+		label: 'Bitcoin Testnet',
+		shortLabel: 'Testnet',
+	},
+	[EAvailableNetworks.bitcoinRegtest]: {
+		id: EAvailableNetworks.bitcoinRegtest,
+		label: 'Bitcoin Regtest',
+		shortLabel: 'Regtest',
+	},
+};
+
 //Returns an array of all available networks from the networks object.
 export const availableNetworks = (): EAvailableNetworks[] =>
 	Object.values(EAvailableNetworks);

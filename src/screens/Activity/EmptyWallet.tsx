@@ -12,16 +12,19 @@ import { Headline } from '../../styles/text';
 import { XIcon } from '../../styles/icons';
 import { updateSettings } from '../../store/actions/settings';
 import Arrow from '../../assets/dotted-arrow.svg';
+import { __E2E__ } from '../../constants/env';
 
 const EmptyWallet = (): ReactElement => {
 	const { height } = useWindowDimensions();
 	const insets = useSafeAreaInsets();
-	const [showClose, setShowClose] = useState(false);
+	const [showClose, setShowClose] = useState(!__E2E__);
 	const { t } = useTranslation('onboarding');
 
 	useEffect(() => {
-		// delay showning close button. this is handy for e2e testing
-		setTimeout(() => setShowClose(true), 2000);
+		if (__E2E__) {
+			// delay showning close button. this is handy for e2e testing
+			setTimeout(() => setShowClose(true), 2000);
+		}
 	}, []);
 
 	const [root, arrowContainer, arrow] = useMemo(() => {

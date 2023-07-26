@@ -10,7 +10,7 @@ import { receiveIcon, sendIcon } from '../assets/icons/tabs';
 import { showBottomSheet } from '../store/actions/ui';
 import { resetSendTransaction } from '../store/actions/wallet';
 import { betaRiskAcceptedSelector } from '../store/reselect/user';
-import { viewControllerSelector } from '../store/reselect/ui';
+import { viewControllersSelector } from '../store/reselect/ui';
 import useColors from '../hooks/colors';
 import { Text02M } from '../styles/text';
 import { ScanIcon } from '../styles/icons';
@@ -27,9 +27,12 @@ const TabBar = ({
 	const insets = useSafeAreaInsets();
 	const { t } = useTranslation('wallet');
 	const betaRiskAccepted = useSelector(betaRiskAcceptedSelector);
-	const { isOpen: shouldHide } = useSelector((state) => {
-		return viewControllerSelector(state, 'timeRangePrompt');
-	});
+	const viewControllers = useSelector(viewControllersSelector);
+
+	const shouldHide = useMemo(() => {
+		const activityFilterSheets = ['timeRangePrompt', 'tagsPrompt'];
+		return activityFilterSheets.some((view) => viewControllers[view].isOpen);
+	}, [viewControllers]);
 
 	const onReceivePress = (): void => {
 		if (betaRiskAccepted) {

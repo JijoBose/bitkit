@@ -17,17 +17,17 @@ enableScreens(true);
 enableFreeze(true);
 
 const Root = (): ReactElement => {
-	const content = (
-		<Provider store={store}>
-			<PersistGate
-				loading={<View style={styles.container} />}
-				persistor={persistor}>
-				<App />
-			</PersistGate>
-		</Provider>
+	return (
+		<ErrorBoundary>
+			<Provider store={store}>
+				<PersistGate
+					loading={<View style={styles.container} />}
+					persistor={persistor}>
+					<App />
+				</PersistGate>
+			</Provider>
+		</ErrorBoundary>
 	);
-
-	return <ErrorBoundary>{content}</ErrorBoundary>;
 };
 
 const styles = StyleSheet.create({

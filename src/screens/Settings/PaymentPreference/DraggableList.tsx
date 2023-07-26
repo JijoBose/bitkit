@@ -1,5 +1,6 @@
 import React, { memo, ReactElement, useCallback, useState } from 'react';
 import {
+	View,
 	StyleProp,
 	StyleSheet,
 	TouchableOpacity,
@@ -11,7 +12,6 @@ import DraggableFlatList, {
 	ScaleDecorator,
 } from 'react-native-draggable-flatlist';
 
-import { View } from '../../../styles/components';
 import { Text01S } from '../../../styles/text';
 import { ListIcon } from '../../../styles/icons';
 
@@ -41,12 +41,13 @@ const DraggableList = ({
 		return (
 			<ScaleDecorator>
 				<TouchableOpacity
-					onLongPress={drag}
-					disabled={isActive}
+					style={styles.container}
 					activeOpacity={isActive ? 0.6 : 1}
-					style={styles.container}>
+					disabled={isActive}
+					onPressIn={drag}
+					onLongPress={drag}>
 					<Text01S color="white">{item.title}</Text01S>
-					<View color="transparent">
+					<View>
 						<ListIcon height={24} width={24} />
 					</View>
 				</TouchableOpacity>

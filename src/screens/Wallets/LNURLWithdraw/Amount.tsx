@@ -10,7 +10,6 @@ import { StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
-import LNURLWNumberpad from './LNURLWNumberpad';
 import { TouchableOpacity } from '../../../styles/components';
 import { Caption13Up, Text02B } from '../../../styles/text';
 import { SwitchIcon } from '../../../styles/icons';
@@ -21,18 +20,18 @@ import SafeAreaInset from '../../../components/SafeAreaInset';
 import Money from '../../../components/Money';
 import NumberPadTextField from '../../../components/NumberPadTextField';
 import Button from '../../../components/Button';
-import { EBalanceUnit } from '../../../store/types/wallet';
 import { sendMax } from '../../../utils/wallet/transactions';
 import {
 	selectedNetworkSelector,
 	selectedWalletSelector,
 } from '../../../store/reselect/wallet';
-import { balanceUnitSelector } from '../../../store/reselect/settings';
+import { primaryUnitSelector } from '../../../store/reselect/settings';
 import { useSwitchUnit } from '../../../hooks/wallet';
 import { useCurrency } from '../../../hooks/displayValues';
 import { getNumberPadText } from '../../../utils/numberpad';
 import { convertToSats } from '../../../utils/conversion';
 import type { LNURLWithdrawProps } from '../../../navigation/types';
+import SendNumberPad from '../Send/SendNumberPad';
 
 const Amount = ({
 	navigation,
@@ -45,7 +44,7 @@ const Amount = ({
 	const [nextUnit, switchUnit] = useSwitchUnit();
 	const selectedWallet = useSelector(selectedWalletSelector);
 	const selectedNetwork = useSelector(selectedNetworkSelector);
-	const unit = useSelector(balanceUnitSelector);
+	const unit = useSelector(primaryUnitSelector);
 	const [text, setText] = useState('');
 	const [error, setError] = useState(false);
 
@@ -60,7 +59,6 @@ const Amount = ({
 	}, [text, unit]);
 
 	const maxWithdrawableProps = {
-		...(unit !== EBalanceUnit.fiat ? { symbol: true } : { showFiat: true }),
 		...(error && { color: 'brand' as keyof IColors }),
 	};
 
@@ -103,6 +101,7 @@ const Amount = ({
 								size="text02m"
 								decimalLength="long"
 								testID="maxWithdrawable"
+								symbol={true}
 								{...maxWithdrawableProps}
 							/>
 						</View>
@@ -141,7 +140,7 @@ const Amount = ({
 						</View>
 					</View>
 
-					<LNURLWNumberpad
+					<SendNumberPad
 						value={text}
 						maxAmount={maxWithdrawable}
 						onChange={setText}

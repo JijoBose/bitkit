@@ -43,6 +43,7 @@ const Passphrase = ({
 		<GlowingBackground topLeft="brand">
 			<KeyboardAvoidingView style={styles.content}>
 				<ScrollView
+					color="transparent"
 					contentContainerStyle={styles.scrollContent}
 					showsVerticalScrollIndicator={false}
 					bounces={false}>

@@ -153,7 +153,6 @@ d('Settings', () => {
 			await element(by.id('DisplaySuggestions')).tap();
 			await element(by.id('ResetSuggestions')).tap();
 			await element(by.id('DialogConfirm')).tap();
-			await element(by.id('NavigationClose')).tap();
 
 			// backupSeedPhrase should be visible again
 			await expect(element(by.id('Suggestion-backupSeedPhrase'))).toBeVisible();

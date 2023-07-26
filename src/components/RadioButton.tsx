@@ -41,7 +41,7 @@ export const RadioButton = memo(
 					</View>
 				</View>
 				<View style={styles.rightColumn}>
-					{checked && <Checkmark color="brand" height={22} width={22} />}
+					{checked && <Checkmark color="brand" height={32} width={32} />}
 				</View>
 			</TouchableOpacity>
 		);
@@ -93,9 +93,9 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
-		paddingVertical: 14,
 		borderBottomColor: 'rgba(255, 255, 255, 0.1)',
 		borderBottomWidth: 1,
+		minHeight: 56,
 	},
 	itemLast: {
 		borderBottomWidth: 0,

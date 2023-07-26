@@ -20,20 +20,20 @@ import { resetFeesStore } from '../../../store/actions/fees';
 import { resetTodos } from '../../../store/actions/todos';
 import { resetUiStore } from '../../../store/actions/ui';
 import { resetSettingsStore, wipeApp } from '../../../store/actions/settings';
+import { getWalletStore } from '../../../store/helpers';
+import { warningsSelector } from '../../../store/reselect/checks';
 import {
 	addressTypeSelector,
 	selectedNetworkSelector,
 	selectedWalletSelector,
 } from '../../../store/reselect/wallet';
 import { resetMetaStore } from '../../../store/actions/metadata';
-import { EItemType, IListData } from '../../../components/List';
 import SettingsView from './../SettingsView';
-import type { SettingsScreenProps } from '../../../navigation/types';
-import { getWalletStore } from '../../../store/helpers';
-import { runChecks } from '../../../utils/wallet/checks';
-import { warningsSelector } from '../../../store/reselect/checks';
-import { getFakeTransaction } from '../../../utils/wallet/testing';
+import { EItemType, IListData } from '../../../components/List';
 import { refreshWallet } from '../../../utils/wallet';
+import { runChecks } from '../../../utils/wallet/checks';
+import { getFakeTransaction } from '../../../utils/wallet/testing';
+import type { SettingsScreenProps } from '../../../navigation/types';
 
 const DevSettings = ({
 	navigation,
@@ -43,9 +43,9 @@ const DevSettings = ({
 	const selectedWallet = useSelector(selectedWalletSelector);
 	const selectedNetwork = useSelector(selectedNetworkSelector);
 	const addressType = useSelector(addressTypeSelector);
-	const warnings = useSelector((state) =>
-		warningsSelector(state, selectedWallet, selectedNetwork),
-	);
+	const warnings = useSelector((state) => {
+		return warningsSelector(state, selectedWallet, selectedNetwork);
+	});
 
 	const settingsListData: IListData[] = [
 		{
@@ -85,20 +85,51 @@ const DevSettings = ({
 					title: 'Trigger unhandled async exception',
 					type: EItemType.button,
 					testID: 'TriggerAsyncError',
-					onPress: async (): Promise<void> => {
+					onPress: (): void => {
 						throw new Error('test async error');
+					},
+				},
+				{
+					title: 'Trigger Storage Warning',
+					type: EItemType.button,
+					hide: selectedNetwork !== 'bitcoinRegtest',
+					testID: 'TriggerStorageWarning',
+					onPress: (): void => {
+						const wallet = getWalletStore();
+						const addresses =
+							wallet.wallets[selectedWallet].addresses[selectedNetwork][
+								addressType
+							];
+						Object.keys(addresses).map((key) => {
+							if (addresses[key].index === 0) {
+								addresses[key].address =
+									'bcrt1qjp22nm804mtl6vtzf65z2jgmeaedrlvzlxffjv';
+							}
+						});
+						const changeAddresses =
+							wallet.wallets[selectedWallet].changeAddresses[selectedNetwork][
+								addressType
+							];
+						Object.keys(changeAddresses).map((key) => {
+							if (changeAddresses[key].index === 0) {
+								changeAddresses[key].address =
+									'bcrt1qwxfllzxchc9eq95zrcc9cjxhzqpkgtznc4wpzc';
+							}
+						});
+						updateWallet(wallet);
+						runChecks({ selectedWallet, selectedNetwork }).then();
 					},
 				},
 				{
 					title: 'Inject Fake Transaction',
 					type: EItemType.button,
 					testID: 'InjectFakeTransaction',
-					onPress: async (): Promise<void> => {
+					onPress: (): void => {
 						const id =
 							'9c0bed5b4c0833824210d29c3c847f47132c03f231ef8df228862132b3a8d80a';
 						const fakeTx = getFakeTransaction(id);
 						fakeTx[id].height = 0;
-						await injectFakeTransaction({
+						injectFakeTransaction({
 							selectedWallet,
 							selectedNetwork,
 							fakeTx,
@@ -209,39 +240,6 @@ const DevSettings = ({
 			],
 		},
 	];
-
-	if (selectedNetwork === 'bitcoinRegtest') {
-		settingsListData[3].data.push({
-			title: 'Trigger Storage Warning',
-			type: EItemType.button,
-			testID: 'TriggerStorageWarning',
-			onPress: async (): Promise<void> => {
-				const wallet = getWalletStore();
-				const addresses =
-					wallet.wallets[selectedWallet].addresses[selectedNetwork][
-						addressType
-					];
-				Object.keys(addresses).map((key) => {
-					if (addresses[key].index === 0) {
-						addresses[key].address =
-							'bcrt1qjp22nm804mtl6vtzf65z2jgmeaedrlvzlxffjv';
-					}
-				});
-				const changeAddresses =
-					wallet.wallets[selectedWallet].changeAddresses[selectedNetwork][
-						addressType
-					];
-				Object.keys(changeAddresses).map((key) => {
-					if (changeAddresses[key].index === 0) {
-						changeAddresses[key].address =
-							'bcrt1qwxfllzxchc9eq95zrcc9cjxhzqpkgtznc4wpzc';
-					}
-				});
-				updateWallet(wallet);
-				runChecks({ selectedWallet, selectedNetwork }).then();
-			},
-		});
-	}
 
 	if (throwError) {
 		throw new Error('test render error');

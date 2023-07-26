@@ -19,11 +19,11 @@ export const defaultElectrumPorts = ['51002', '50002', '51001', '50001'];
 export const getDefaultPort = (
 	selectedNetwork: TAvailableNetworks,
 	protocol: TProtocol,
-): string => {
+): number => {
 	if (protocol === 'ssl') {
-		return selectedNetwork === 'bitcoinTestnet' ? '51002' : '50002';
+		return selectedNetwork === 'bitcoinTestnet' ? 51002 : 50002;
 	} else {
-		return selectedNetwork === 'bitcoinTestnet' ? '51001' : '50001';
+		return selectedNetwork === 'bitcoinTestnet' ? 51001 : 50001;
 	}
 };
 

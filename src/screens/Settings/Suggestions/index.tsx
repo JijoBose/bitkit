@@ -1,15 +1,20 @@
 import React, { memo, ReactElement, useMemo, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
-import { EItemType, IListData } from '../../../components/List';
 import SettingsView from './../SettingsView';
-import { updateSettings } from '../../../store/actions/settings';
-import { resetTodos } from '../../../store/actions/todos';
 import Dialog from '../../../components/Dialog';
+import Button from '../../../components/Button';
+import { EItemType, IListData } from '../../../components/List';
+import { resetTodos } from '../../../store/actions/todos';
+import { updateSettings } from '../../../store/actions/settings';
 import { showSuggestionsSelector } from '../../../store/reselect/settings';
+import { SettingsScreenProps } from '../../../navigation/types';
 
-const SuggestionsSettings = (): ReactElement => {
+const SuggestionsSettings = ({
+	navigation,
+}: SettingsScreenProps<'SuggestionsSettings'>): ReactElement => {
 	const { t } = useTranslation('settings');
 	const showSuggestions = useSelector(showSuggestionsSelector);
 	const [showDialog, setShowDialog] = useState(false);
@@ -17,6 +22,7 @@ const SuggestionsSettings = (): ReactElement => {
 	const settingsListData: IListData[] = useMemo(
 		() => [
 			{
+				title: t('general.suggestions'),
 				data: [
 					{
 						title: t('general.suggestions_display'),
@@ -26,14 +32,6 @@ const SuggestionsSettings = (): ReactElement => {
 							updateSettings({ showSuggestions: !showSuggestions });
 						},
 						testID: 'DisplaySuggestions',
-					},
-					{
-						title: t('general.suggestions_reset'),
-						type: EItemType.button,
-						onPress: (): void => {
-							setShowDialog(true);
-						},
-						testID: 'ResetSuggestions',
 					},
 				],
 			},
@@ -47,7 +45,18 @@ const SuggestionsSettings = (): ReactElement => {
 				title={t('general.suggestions')}
 				listData={settingsListData}
 				showBackNavigation={true}
-			/>
+				childrenPosition="bottom">
+				<View style={styles.buttonContainer}>
+					<Button
+						style={styles.button}
+						text={t('general.suggestions_reset')}
+						size="large"
+						testID="ResetSuggestions"
+						onPress={(): void => setShowDialog(true)}
+					/>
+				</View>
+			</SettingsView>
+
 			<Dialog
 				visible={showDialog}
 				title={t('general.reset_title')}
@@ -59,10 +68,23 @@ const SuggestionsSettings = (): ReactElement => {
 				onConfirm={(): void => {
 					resetTodos();
 					setShowDialog(false);
+					navigation.navigate('Wallet');
 				}}
 			/>
 		</>
 	);
 };
+
+const styles = StyleSheet.create({
+	buttonContainer: {
+		paddingHorizontal: 16,
+		flexDirection: 'row',
+		justifyContent: 'center',
+		marginTop: 'auto',
+	},
+	button: {
+		flex: 1,
+	},
+});
 
 export default memo(SuggestionsSettings);

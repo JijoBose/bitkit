@@ -40,6 +40,10 @@ const TagsSettings = ({
 									icon="trash"
 									onDelete={(): void => {
 										deleteTag(tag);
+
+										if (lastUsedTags.length === 1) {
+											navigation.goBack();
+										}
 									}}
 								/>
 							))}

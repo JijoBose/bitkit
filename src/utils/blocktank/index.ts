@@ -11,6 +11,7 @@ import { err, ok, Result } from '@synonymdev/result';
 import { EAvailableNetworks, TAvailableNetworks } from '../networks';
 import { addPeers, getNodeId, refreshLdk } from '../lightning';
 import { refreshOrder } from '../../store/actions/blocktank';
+import i18n from '../../utils/i18n';
 import { sleep } from '../helpers';
 import { getBlocktankStore, getUserStore } from '../../store/helpers';
 import { TGeoBlockResponse } from '../../store/types/blocktank';
@@ -222,25 +223,25 @@ export const watchOrder = async (
 export const getStateMessage = (code: number): string => {
 	switch (code) {
 		case 0:
-			return 'Awaiting Payment';
+			return i18n.t('lightning:order_state.awaiting_payment');
 		case 100:
-			return 'Paid';
+			return i18n.t('lightning:order_state.paid');
 		case 150:
-			return 'Payment Refunded';
+			return i18n.t('lightning:order_state.refunded');
 		case 200:
-			return 'Queued For Opening';
+			return i18n.t('lightning:order_state.queued');
 		case 300:
-			return 'Opening Connection';
+			return i18n.t('lightning:order_state.opening');
 		case 350:
-			return 'Connection Closing';
+			return i18n.t('lightning:order_state.closing');
 		case 400:
-			return 'Given Up';
+			return i18n.t('lightning:order_state.given_up');
 		case 410:
-			return 'Order Expired';
+			return i18n.t('lightning:order_state.expired');
 		case 450:
-			return 'Connection Closed';
+			return i18n.t('lightning:order_state.closed');
 		case 500:
-			return 'Connection Open';
+			return i18n.t('lightning:order_state.open');
 	}
 
 	return `Unknown code: ${code}`;

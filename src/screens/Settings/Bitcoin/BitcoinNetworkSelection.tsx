@@ -17,9 +17,8 @@ import { updateOnchainFeeEstimates } from '../../../store/actions/fees';
 import { selectedNetworkSelector } from '../../../store/reselect/wallet';
 import { connectToElectrum } from '../../../utils/wallet/electrum';
 import { startWalletServices } from '../../../utils/startup';
-import { EAvailableNetworks } from '../../../utils/networks';
-import { getNetworkData } from '../../../utils/helpers';
 import { setupLdk } from '../../../utils/lightning';
+import { networkLabels } from '../../../utils/networks';
 import {
 	getCurrentWallet,
 	getSelectedAddressType,
@@ -31,14 +30,14 @@ const BitcoinNetworkSelection = ({
 }: SettingsScreenProps<'BitcoinNetworkSelection'>): ReactElement => {
 	const { t } = useTranslation('settings');
 	const selectedNetwork = useSelector(selectedNetworkSelector);
+
 	const settingsListData: IListData[] = useMemo(
 		() => [
 			{
-				data: Object.values(EAvailableNetworks).map((network) => {
-					const networkData = getNetworkData({ selectedNetwork: network });
+				data: Object.values(networkLabels).map((network) => {
 					return {
-						title: networkData.label,
-						value: network === selectedNetwork,
+						title: network.label,
+						value: network.id === selectedNetwork,
 						type: EItemType.button,
 						onPress: async (): Promise<void> => {
 							navigation.goBack();
@@ -46,29 +45,29 @@ const BitcoinNetworkSelection = ({
 							// Wipe existing activity
 							resetActivityStore();
 							// Switch to new network.
-							updateWallet({ selectedNetwork: network });
+							updateWallet({ selectedNetwork: network.id });
 							// Grab the selectedWallet.
 							const { selectedWallet } = getCurrentWallet({
-								selectedNetwork: network,
+								selectedNetwork: network.id,
 							});
 							const addressType = getSelectedAddressType({
-								selectedNetwork: network,
+								selectedNetwork: network.id,
 								selectedWallet,
 							});
 							// Connect to a Electrum Server on the network
-							await connectToElectrum({ selectedNetwork: network });
+							await connectToElectrum({ selectedNetwork: network.id });
 							// Generate addresses if none exist for the newly selected wallet and network.
 							await updateAddressIndexes({
 								selectedWallet,
-								selectedNetwork: network,
+								selectedNetwork: network.id,
 								addressType,
 							});
 							// Switching networks requires us to reset LDK.
 							await setupLdk({ selectedWallet, selectedNetwork });
 							// Start wallet services with the newly selected network.
-							await startWalletServices({ selectedNetwork: network });
+							await startWalletServices({ selectedNetwork: network.id });
 							await updateOnchainFeeEstimates({
-								selectedNetwork: network,
+								selectedNetwork: network.id,
 								forceUpdate: true,
 							});
 							updateActivityList();

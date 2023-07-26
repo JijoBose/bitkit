@@ -1040,7 +1040,7 @@ export const addUnconfirmedTransactions = ({
  * @param {TWalletName} [selectedWallet]
  * @param {TAvailableNetworks} [selectedNetwork]
  */
-export const injectFakeTransaction = async ({
+export const injectFakeTransaction = ({
 	id = 'fake-transaction',
 	fakeTx,
 	selectedWallet,
@@ -1050,7 +1050,7 @@ export const injectFakeTransaction = async ({
 	fakeTx?: IFormattedTransactions;
 	selectedWallet?: TWalletName;
 	selectedNetwork?: TAvailableNetworks;
-}): Promise<Result<string>> => {
+}): Result<string> => {
 	try {
 		if (!selectedNetwork) {
 			selectedNetwork = getSelectedNetwork();

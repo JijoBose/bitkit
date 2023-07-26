@@ -62,7 +62,7 @@
 	"availability_title": "Funds Availability",
 	"availability_header": "Availability of your Funds.",
 	"availability_text": "Transferring funds to savings usually takes\n±1 hour, but settlement may take <purple>14 days</purple> under certain network conditions.",
-	"node_info": "Lightning Node Info",
+	"node_info": "Lightning Node",
 	"node_id_copied": "Successfully copied LDK Node ID to clipboard.",
 	"node_id": "LDK Node ID",
 	"node_disconnected": "disconnected",
@@ -99,6 +99,7 @@
 	"other": "Other",
 	"opened_on": "Opened on",
 	"closed_on": "Closed on",
+	"channel_node_id": "Node ID",
 	"copied_couterparty": "Copied Counterparty Node ID to Clipboard",
 	"debug": "Debug",
 	"is_usable": "Is Usable?",
@@ -122,5 +123,17 @@
 	"order_given_up_title": "Instant Payments Setup Failed",
 	"order_given_up_msg": "Order expired. Please try again.",
 	"order_expired_title": "Instant Payments Setup Failed",
-	"order_expired_msg": "Order expired. Please try again."
+	"order_expired_msg": "Order expired. Please try again.",
+	"order_state": {
+		"awaiting_payment": "Awaiting payment",
+		"paid": "Payment successful",
+		"refunded": "Payment refunded",
+		"queued": "Queued for opening",
+		"opening": "Opening connection",
+		"closing": "Connection closing",
+		"given_up": "Given up",
+		"expired": "Order expired",
+		"closed": "Connection closed",
+		"open": "Connection open"
+	}
 }

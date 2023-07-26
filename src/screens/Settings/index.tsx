@@ -78,17 +78,16 @@ const MainSettings = ({
 				testID: 'About',
 				onPress: (): void => navigation.navigate('AboutSettings'),
 			},
-		];
-
-		if (enableDevOptions) {
-			data.push({
+			{
 				title: t('dev_title'),
 				type: EItemType.button,
+				hide: !enableDevOptions,
 				testID: 'DevSettings',
 				onPress: (): void => navigation.navigate('DevSettings'),
-			});
-		}
-		return [{ data }];
+			},
+		];
+
+		return [{ title: t('general.section_title'), data }];
 	}, [enableDevOptions, navigation, t]);
 
 	return (

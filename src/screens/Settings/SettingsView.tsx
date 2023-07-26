@@ -136,8 +136,6 @@ const styles = StyleSheet.create({
 	},
 	childrenContent: {
 		flex: 2,
-		borderColor: 'blue',
-		borderWidth: 1,
 	},
 	fullHeight: {
 		flex: 1,

@@ -181,6 +181,7 @@ const RestoreFromSeed = (): ReactElement => {
 			</View>
 
 			<ScrollView
+				color="transparent"
 				contentContainerStyle={styles.content}
 				showsVerticalScrollIndicator={false}
 				bounces={false}

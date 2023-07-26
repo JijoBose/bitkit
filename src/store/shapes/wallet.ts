@@ -20,23 +20,26 @@ import {
 
 export const addressTypes: Readonly<IAddressTypes> = {
 	[EAddressType.p2wpkh]: {
-		name: 'Native Segwit Bech32',
 		type: EAddressType.p2wpkh,
 		path: "m/84'/0'/0'/0/0",
+		name: 'Native Segwit Bech32',
+		shortName: 'Native Segwit',
 		description: 'Pay-to-witness-public-key-hash',
 		example: '(bc1x...)',
 	},
 	[EAddressType.p2sh]: {
-		name: 'Nested Segwit',
 		type: EAddressType.p2sh,
 		path: "m/49'/0'/0'/0/0",
+		name: 'Nested Segwit',
+		shortName: 'Segwit',
 		description: 'Pay-to-Script-Hash',
 		example: '(3x...)',
 	},
 	[EAddressType.p2pkh]: {
-		name: 'Legacy',
 		type: EAddressType.p2pkh,
 		path: "m/44'/0'/0'/0/0",
+		name: 'Legacy',
+		shortName: 'Legacy',
 		description: 'Pay-to-public-key-hash',
 		example: '(1x...)',
 	},

@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 
 import styled from './styled-components';
@@ -32,7 +33,6 @@ import {
 	speedSlowIcon,
 	xIcon,
 	tagIcon,
-	shareIcon,
 	penIcon,
 	pencileIcon,
 	infoIcon,
@@ -42,6 +42,7 @@ import {
 	bIcon,
 	unitBitcoinIcon,
 	unitSatoshiIcon,
+	unitFiatIcon,
 	trashIcon,
 	plusIcon,
 	backIcon,
@@ -64,6 +65,9 @@ import {
 	exclamationIcon,
 	fingerPrintIcon,
 	lockIcon,
+	shareIosIcon,
+	shareAndroidIcon,
+	hourglassSimpleIcon,
 } from '../assets/icons/wallet';
 import {
 	chevronRightIcon,
@@ -190,6 +194,16 @@ export const HourglassIcon = styled(SvgXml).attrs((props) => ({
 	color: props.color ? props.theme.colors[props.color] : 'white',
 }));
 
+export const HourglassSimpleIcon = styled(SvgXml).attrs((props) => ({
+	xml: hourglassSimpleIcon(
+		props.color ? props.theme.colors[props.color] : 'white',
+	),
+	height: props.height ?? '32px',
+	width: props.width ?? '32px',
+}))<IconProps>((props) => ({
+	color: props.color ? props.theme.colors[props.color] : 'white',
+}));
+
 export const TimerIcon = styled(SvgXml).attrs((props) => ({
 	xml: timerIcon(props.color ? props.theme.colors[props.color] : 'white'),
 	height: props.height ?? '16px',
@@ -300,13 +314,26 @@ export const TagIcon = styled(SvgXml).attrs((props) => ({
 	color: props.color ? props.theme.colors[props.color] : 'white',
 }));
 
-export const ShareIcon = styled(SvgXml).attrs((props) => ({
-	xml: shareIcon(props.color ? props.theme.colors[props.color] : 'white'),
+const ShareIosIcon = styled(SvgXml).attrs((props) => ({
+	xml: shareIosIcon(props.color ? props.theme.colors[props.color] : 'white'),
 	height: props.height ?? '32px',
 	width: props.width ?? '32px',
 }))<IconProps>((props) => ({
 	color: props.color ? props.theme.colors[props.color] : 'white',
 }));
+
+const ShareAndroidIcon = styled(SvgXml).attrs((props) => ({
+	xml: shareAndroidIcon(
+		props.color ? props.theme.colors[props.color] : 'white',
+	),
+	height: props.height ?? '32px',
+	width: props.width ?? '32px',
+}))<IconProps>((props) => ({
+	color: props.color ? props.theme.colors[props.color] : 'white',
+}));
+
+export const ShareIcon =
+	Platform.OS === 'ios' ? ShareIosIcon : ShareAndroidIcon;
 
 export const PenIcon = styled(SvgXml).attrs((props) => ({
 	xml: penIcon(props.color ? props.theme.colors[props.color] : 'white'),
@@ -404,6 +431,16 @@ export const UnitSatoshiIcon = styled(SvgXml).attrs((props) => ({
 	color: props.color ? props.theme.colors[props.color] : 'white',
 }));
 
+export const UnitFiatIcon = styled(SvgXml).attrs((props) => ({
+	xml: unitFiatIcon(
+		props.color ? props.theme.colors[props.color] : props.theme.colors.brand,
+	),
+	height: props.height ?? '32px',
+	width: props.width ?? '32px',
+}))<IconProps>((props) => ({
+	color: props.color ? props.theme.colors[props.color] : 'white',
+}));
+
 export const LightningIcon = styled(SvgXml).attrs((props) => ({
 	xml: lightningIcon(props.color ? props.theme.colors[props.color] : 'white'),
 	height: props.height ?? '16px',
@@ -440,8 +477,8 @@ export const ChevronRight = styled(SvgXml).attrs((props) => ({
 	xml: chevronRightIcon(
 		props.color ? props.theme.colors[props.color] : 'white',
 	),
-	height: props.height ?? '12px',
-	width: props.width ?? '12px',
+	height: props.height ?? '32px',
+	width: props.width ?? '32px',
 }))<IconProps>((props) => ({
 	color: props.color ? props.theme.colors[props.color] : 'white',
 }));
@@ -642,8 +679,8 @@ export const GlobeIcon = styled(SvgXml).attrs((props) => ({
 	xml: globeIcon(
 		props.color ? props.theme.colors[props.color] : props.theme.colors.brand,
 	),
-	height: props.height ?? '24px',
-	width: props.width ?? '24px',
+	height: props.height ?? '16px',
+	width: props.width ?? '16px',
 }))<IconProps>((props) => ({
 	color: props.color ? props.theme.colors[props.color] : 'white',
 }));

@@ -99,14 +99,14 @@ const Header = (): ReactElement => {
 	);
 };
 
-export const HEIGHT = 46;
+export const HEADER_HEIGHT = 46;
 
 const styles = StyleSheet.create({
 	container: {
 		flexDirection: 'row',
 		justifyContent: 'flex-end',
 		alignItems: 'center',
-		height: HEIGHT,
+		height: HEADER_HEIGHT,
 	},
 	shadowContainer: {
 		...StyleSheet.absoluteFillObject,

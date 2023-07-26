@@ -130,8 +130,8 @@ const ElectrumConfig = ({
 				return;
 			}
 			const defaultPorts = {
-				ssl: Number(getDefaultPort(selectedNetwork, 'ssl')),
-				tcp: Number(getDefaultPort(selectedNetwork, 'tcp')),
+				ssl: getDefaultPort(selectedNetwork, 'ssl'),
+				tcp: getDefaultPort(selectedNetwork, 'tcp'),
 			};
 			const connectData = {
 				...defaultPorts,
@@ -260,6 +260,8 @@ const ElectrumConfig = ({
 				</Caption13Up>
 				<TextInput
 					style={styles.textInput}
+					value={host}
+					placeholder="127.0.0.1"
 					textAlignVertical="center"
 					underlineColorAndroid="transparent"
 					autoCapitalize="none"
@@ -267,7 +269,6 @@ const ElectrumConfig = ({
 					keyboardType="default"
 					autoCorrect={false}
 					onChangeText={setHost}
-					value={host}
 					returnKeyType="done"
 					testID="HostInput"
 				/>
@@ -277,6 +278,8 @@ const ElectrumConfig = ({
 				</Caption13Up>
 				<TextInput
 					style={styles.textInput}
+					value={port.toString()}
+					placeholder="50001"
 					textAlignVertical="center"
 					underlineColorAndroid="transparent"
 					autoCapitalize="none"
@@ -284,7 +287,6 @@ const ElectrumConfig = ({
 					keyboardType="number-pad"
 					autoCorrect={false}
 					onChangeText={setPort}
-					value={port.toString()}
 					testID="PortInput"
 				/>
 
@@ -298,9 +300,11 @@ const ElectrumConfig = ({
 						onPress={(value): void => {
 							const radioValue = value as TProtocol;
 							setProtocol(radioValue);
-							//Toggle the port if the protocol changes and the default ports are still set.
+
+							// Toggle the port if the protocol changes and the default ports are still set.
 							if (!port || defaultElectrumPorts.includes(port.toString())) {
-								setPort(getDefaultPort(selectedNetwork, radioValue));
+								const defaultPort = getDefaultPort(selectedNetwork, radioValue);
+								setPort(defaultPort.toString());
 							}
 						}}
 					/>

@@ -60,13 +60,14 @@ export const ListItem = ({
 					size="text01m"
 					sign={isSend ? '-' : '+'}
 					highlight={true}
+					unitType="primary"
 				/>
 				<Money
 					sats={amount}
 					enableHide={true}
 					size="caption13M"
-					showFiat={true}
 					color={exists ? 'gray1' : 'red'}
+					unitType="secondary"
 				/>
 			</View>
 		) : null}
@@ -197,7 +198,7 @@ export const EmptyItem = ({
 	);
 
 	return (
-		<View style={styles.root}>
+		<View style={styles.empty}>
 			<TouchableOpacity style={styles.pressable} onPress={onPress}>
 				<ListItem title={title} description={description} icon={icon} />
 			</TouchableOpacity>
@@ -261,6 +262,10 @@ const ActivityListItem = ({
 };
 
 const styles = StyleSheet.create({
+	empty: {
+		borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+		borderBottomWidth: 1,
+	},
 	root: {
 		borderBottomColor: 'rgba(255, 255, 255, 0.1)',
 		borderBottomWidth: 1,

@@ -11,7 +11,13 @@ import { SvgProps } from 'react-native-svg';
 import isEqual from 'lodash.isequal';
 
 import { Switch } from '../styles/components';
-import { Text01S, Caption13Up, Caption13S } from '../styles/text';
+import {
+	Text01S,
+	Caption13Up,
+	Caption13S,
+	Text02M,
+	Text01M,
+} from '../styles/text';
 import { ChevronRight, Checkmark } from '../styles/icons';
 import DraggableList from '../screens/Settings/PaymentPreference/DraggableList';
 
@@ -221,8 +227,12 @@ const _Item = memo((item: ItemData): ReactElement => {
 
 		return (
 			<TouchableOpacity
-				// eslint-disable-next-line react-native/no-inline-styles
-				style={[styles.item, { opacity: enabled ? 1 : 0.5 }]}
+				style={[
+					styles.item,
+					description ? styles.itemLarge : {},
+					// eslint-disable-next-line react-native/no-inline-styles
+					{ opacity: enabled ? 1 : 0.5 },
+				]}
 				activeOpacity={0.6}
 				disabled={disabled}
 				onPress={enabled ? _onPress : undefined}
@@ -238,24 +248,27 @@ const _Item = memo((item: ItemData): ReactElement => {
 							/>
 						</View>
 					)}
-					<View>
-						<Text01S color="white">{title}</Text01S>
-						{description && (
-							<View>
-								<Caption13S color="gray1">{description}</Caption13S>
-							</View>
-						)}
-					</View>
+
+					{description ? (
+						<View>
+							<Text01M color="white">{title}</Text01M>
+							{description && <Text02M color="gray1">{description}</Text02M>}
+						</View>
+					) : (
+						<View>
+							<Text01S color="white">{title}</Text01S>
+						</View>
+					)}
 				</View>
 				<View style={styles.rightColumn}>
 					{useCheckmark ? (
-						value && <Checkmark color="brand" width={27} height={27} />
+						value && <Checkmark color="brand" width={32} height={32} />
 					) : (
 						<>
 							<Text01S testID="Value" style={styles.valueText}>
 								{value}
 							</Text01S>
-							<ChevronRight color="gray1" width={24} height={15} />
+							<ChevronRight color="gray1" width={24} height={24} />
 						</>
 					)}
 				</View>
@@ -297,6 +310,7 @@ const List = ({
 			sections={data}
 			extraData={data}
 			keyExtractor={(item, index): string => `${item.title}-${index}`}
+			showsVerticalScrollIndicator={false}
 			renderSectionHeader={useCallback(
 				({
 					section: { title },
@@ -333,16 +347,19 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
-		paddingVertical: 14,
 		borderBottomColor: 'rgba(255, 255, 255, 0.1)',
 		borderBottomWidth: 1,
 		minHeight: 56,
 	},
+	itemLarge: {
+		minHeight: 90,
+	},
 	itemHeader: {
+		marginBottom: 10,
 		justifyContent: 'center',
 	},
 	valueText: {
-		marginRight: 15,
+		marginRight: 8,
 	},
 	leftColumn: {
 		flexDirection: 'row',
@@ -355,7 +372,7 @@ const styles = StyleSheet.create({
 	},
 	icon: {
 		borderRadius: 200,
-		marginRight: 8,
+		marginRight: 16,
 		justifyContent: 'center',
 		alignItems: 'center',
 	},
@@ -363,7 +380,7 @@ const styles = StyleSheet.create({
 		marginTop: 14,
 	},
 	sectionSpacing: {
-		marginTop: 27,
+		marginTop: 36,
 	},
 });
 

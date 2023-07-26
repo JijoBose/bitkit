@@ -3,13 +3,6 @@ import NetInfo from '@react-native-community/netinfo';
 import { err, ok, Result } from '@synonymdev/result';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
-import { TAvailableNetworks } from './networks';
-import {
-	TBitcoinAbbreviation,
-	TBitcoinLabel,
-	EBitcoinUnit,
-	TTicker,
-} from '../store/types/wallet';
 import { i18nTime } from '../utils/i18n';
 
 export const promiseTimeout = <T>(
@@ -34,51 +27,6 @@ export const isOnline = async (): Promise<boolean> => {
 		return connectionInfo.isConnected === true;
 	} catch {
 		return false;
-	}
-};
-
-interface IGetNetworkData {
-	selectedNetwork?: TAvailableNetworks;
-	bitcoinUnit?: EBitcoinUnit;
-}
-interface IGetNetworkDataResponse {
-	abbreviation: TBitcoinAbbreviation;
-	label: TBitcoinLabel;
-	ticker: TTicker;
-}
-/**
- *
- * @param selectedNetwork {string}
- * @param bitcoinUnit {string}
- * @return {{ abbreviation: string, label: string, ticker: string }}
- */
-export const getNetworkData = ({
-	selectedNetwork = 'bitcoin',
-	bitcoinUnit = EBitcoinUnit.satoshi,
-}: IGetNetworkData): IGetNetworkDataResponse => {
-	const abbreviation = bitcoinUnit === 'satoshi' ? 'sats' : 'BTC';
-	try {
-		switch (selectedNetwork) {
-			case 'bitcoin':
-				return { abbreviation, label: 'Bitcoin Mainnet', ticker: 'BTC' };
-			case 'bitcoinTestnet':
-				return { abbreviation, label: 'Bitcoin Testnet', ticker: 'tBTC' };
-			case 'bitcoinRegtest':
-				return { abbreviation, label: 'Bitcoin Regtest', ticker: 'tBTC' };
-			default:
-				return { abbreviation, label: 'Bitcoin Mainnet', ticker: 'BTC' };
-		}
-	} catch {
-		return { abbreviation, label: 'Bitcoin Mainnet', ticker: 'BTC' };
-	}
-};
-
-export const getLastWordInString = (phrase = ''): string => {
-	try {
-		const n = phrase.split(' ');
-		return n[n.length - 1];
-	} catch (e) {
-		return phrase;
 	}
 };
 
@@ -214,6 +162,19 @@ export const trimExtraSpaces = (text: string): string => {
  */
 export const capitalize = (text = ''): string => {
 	return text.charAt(0).toUpperCase() + text.slice(1);
+};
+
+/**
+ * Returns the last word in a string.
+ * @param {string} phrase
+ */
+export const getLastWordInString = (phrase: string): string => {
+	try {
+		const n = phrase.split(' ');
+		return n[n.length - 1];
+	} catch (e) {
+		return phrase;
+	}
 };
 
 /**
@@ -623,7 +584,7 @@ export const removeKeyFromObject = (
  */
 export const chunkUint8Array = (
 	buffer: Uint8Array,
-	chunkSize = 50000,
+	chunkSize: number = 50000,
 ): Result<Uint8Array[]> => {
 	if (!Number.isInteger(chunkSize) || chunkSize <= 0) {
 		return err('chunkSize must be a positive integer.');

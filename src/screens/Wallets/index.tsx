@@ -26,7 +26,7 @@ import ConnectivityIndicator from '../../components/ConnectivityIndicator';
 import SafeAreaView from '../../components/SafeAreaView';
 import BetaWarning from '../../components/BetaWarning';
 import Assets from '../../components/Assets';
-import Header, { HEIGHT } from './Header';
+import Header, { HEADER_HEIGHT } from './Header';
 import type { WalletScreenProps } from '../../navigation/types';
 import {
 	hideBalanceSelector,
@@ -101,6 +101,7 @@ const Wallets = ({
 						<AnimatedRefreshControl
 							refreshing={refreshing}
 							tintColor={colors.refreshControl}
+							progressViewOffset={HEADER_HEIGHT}
 							exiting={FadeOut}
 							onRefresh={onRefresh}
 						/>
@@ -136,7 +137,7 @@ const Wallets = ({
 const styles = StyleSheet.create({
 	content: {
 		flexGrow: 1,
-		paddingTop: HEIGHT,
+		paddingTop: HEADER_HEIGHT,
 	},
 	scrollView: {
 		paddingBottom: 130,

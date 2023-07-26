@@ -5,27 +5,16 @@ import { useTranslation } from 'react-i18next';
 import { EItemType, IListData, ItemData } from '../../../components/List';
 import SettingsView from '../SettingsView';
 import { enableDevOptionsSelector } from '../../../store/reselect/settings';
-import { EAddressType } from '../../../store/types/wallet';
+import { updateTransactions } from '../../../store/actions/wallet';
+import { addressTypes } from '../../../store/shapes/wallet';
 import {
 	addressTypeSelector,
 	selectedWalletSelector,
 	selectedNetworkSelector,
 } from '../../../store/reselect/wallet';
-import type { SettingsScreenProps } from '../../../navigation/types';
 import { rescanAddresses } from '../../../utils/wallet';
-import { updateTransactions } from '../../../store/actions/wallet';
-
-const typesDescriptions = {
-	[EAddressType.p2wpkh]: 'Native Segwit',
-	[EAddressType.p2sh]: 'Segwit',
-	[EAddressType.p2pkh]: 'Legacy',
-};
-
-const networkLabels = {
-	bitcoin: 'Mainnet',
-	bitcoinTestnet: 'Testnet',
-	bitcoinRegtest: 'Regtest',
-};
+import { networkLabels } from '../../../utils/networks';
+import type { SettingsScreenProps } from '../../../navigation/types';
 
 const AdvancedSettings = ({
 	navigation,
@@ -43,7 +32,7 @@ const AdvancedSettings = ({
 			{
 				title: t('adv.address_type'),
 				type: EItemType.button,
-				value: typesDescriptions[selectedAddressType],
+				value: addressTypes[selectedAddressType].shortName,
 				onPress: (): void => navigation.navigate('AddressTypePreference'),
 				testID: 'AddressTypePreference',
 			},
@@ -57,6 +46,37 @@ const AdvancedSettings = ({
 				type: EItemType.button,
 				onPress: (): void => navigation.navigate('PaymentPreference'),
 			},
+		];
+
+		const networks: ItemData[] = [
+			{
+				title: t('adv.lightning_connections'),
+				type: EItemType.button,
+				onPress: (): void => navigation.navigate('Channels'),
+				testID: 'Channels',
+			},
+			{
+				title: t('adv.lightning_node'),
+				type: EItemType.button,
+				onPress: (): void => navigation.navigate('LightningNodeInfo'),
+				testID: 'LightningNodeInfo',
+			},
+			{
+				title: t('adv.electrum_server'),
+				type: EItemType.button,
+				onPress: (): void => navigation.navigate('ElectrumConfig'),
+				testID: 'ElectrumConfig',
+			},
+			{
+				title: t('adv.bitcoin_network'),
+				value: networkLabels[selectedNetwork].shortLabel,
+				type: EItemType.button,
+				hide: !enableDevOptions,
+				onPress: (): void => navigation.navigate('BitcoinNetworkSelection'),
+			},
+		];
+
+		const other: ItemData[] = [
 			{
 				title: t('adv.address_viewer'),
 				type: EItemType.button,
@@ -82,36 +102,6 @@ const AdvancedSettings = ({
 			},
 		];
 
-		const networks: ItemData[] = [
-			{
-				title: t('adv.lightning_connections'),
-				type: EItemType.button,
-				onPress: (): void => navigation.navigate('Channels'),
-				testID: 'Channels',
-			},
-			{
-				title: t('adv.lightning_node'),
-				type: EItemType.button,
-				onPress: (): void => navigation.navigate('LightningNodeInfo'),
-				testID: 'LightningNodeInfo',
-			},
-			{
-				title: t('adv.electrum_server'),
-				type: EItemType.button,
-				onPress: (): void => navigation.navigate('ElectrumConfig'),
-				testID: 'ElectrumConfig',
-			},
-		];
-
-		if (enableDevOptions) {
-			networks.push({
-				title: t('adv.bitcoin_network'),
-				value: networkLabels[selectedNetwork],
-				type: EItemType.button,
-				onPress: (): void => navigation.navigate('BitcoinNetworkSelection'),
-			});
-		}
-
 		return [
 			{
 				title: t('adv.section_payments'),
@@ -120,6 +110,10 @@ const AdvancedSettings = ({
 			{
 				title: t('adv.section_networks'),
 				data: networks,
+			},
+			{
+				title: t('adv.section_other'),
+				data: other,
 			},
 		];
 	}, [

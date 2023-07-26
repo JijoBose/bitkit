@@ -5,8 +5,7 @@ import React, {
 	useState,
 	useEffect,
 } from 'react';
-import { StyleSheet } from 'react-native';
-import { useWindowDimensions } from 'react-native';
+import { View, StyleSheet, LayoutChangeEvent } from 'react-native';
 import {
 	Canvas,
 	RadialGradient,
@@ -16,7 +15,7 @@ import {
 	vec,
 } from '@shopify/react-native-skia';
 
-import { View } from '../styles/components';
+import { View as ThemedView } from '../styles/components';
 import { IColors } from '../styles/colors';
 import useColors from '../hooks/colors';
 
@@ -74,7 +73,7 @@ const GlowingBackground = ({
 	topLeft?: keyof IColors;
 	bottomRight?: keyof IColors;
 }): ReactElement => {
-	const { height, width } = useWindowDimensions();
+	const [{ height, width }, setLayout] = useState({ width: 1, height: 1 });
 	const colors = useColors();
 	const topLeftColor = topLeft ? colors[topLeft] : colors.background;
 	const bottomRightColor = bottomRight
@@ -107,10 +106,17 @@ const GlowingBackground = ({
 		});
 	}, [bottomRightColor]);
 
+	const handleLayout = (event: LayoutChangeEvent): void => {
+		setLayout({
+			width: event.nativeEvent.layout.width,
+			height: event.nativeEvent.layout.height,
+		});
+	};
+
 	return (
-		<View style={styles.container}>
-			<View style={styles.overlay}>
-				<Canvas style={{ width, height }}>
+		<ThemedView style={styles.container}>
+			<View style={styles.overlay} onLayout={handleLayout}>
+				<Canvas style={styles.canvas}>
 					{topLeftItems.map(({ id, color }, index, arr) => (
 						<Glow
 							key={id}
@@ -134,7 +140,7 @@ const GlowingBackground = ({
 				</Canvas>
 			</View>
 			{children}
-		</View>
+		</ThemedView>
 	);
 };
 
@@ -142,12 +148,9 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 	},
-	overlay: {
-		position: 'absolute',
-		top: 0,
-		left: 0,
-		right: 0,
-		bottom: 0,
+	overlay: StyleSheet.absoluteFillObject,
+	canvas: {
+		flex: 1,
 	},
 });
 

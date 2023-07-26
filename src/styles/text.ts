@@ -57,6 +57,7 @@ export const Text01S = styled.Text<TextProps>(({ theme, color }) => ({
 export const Text01M = styled.Text<TextProps>(({ theme, color }) => ({
 	...theme.fonts.semibold,
 	fontSize: '17px',
+	lineHeight: '22px',
 	color: theme.colors[color ?? 'text'],
 	letterSpacing: 0.4,
 }));
@@ -64,6 +65,7 @@ export const Text01M = styled.Text<TextProps>(({ theme, color }) => ({
 export const Text01B = styled.Text<TextProps>(({ theme, color }) => ({
 	...theme.fonts.bold,
 	fontSize: '17px',
+	lineHeight: '22px',
 	color: theme.colors[color ?? 'text'],
 	letterSpacing: 0.4,
 }));
@@ -79,6 +81,7 @@ export const Text02S = styled.Text<TextProps>(({ theme, color }) => ({
 export const Text02M = styled.Text<TextProps>(({ theme, color }) => ({
 	...theme.fonts.semibold,
 	fontSize: '15px',
+	lineHeight: '20px',
 	color: theme.colors[color ?? 'text'],
 	letterSpacing: 0.4,
 }));
@@ -87,6 +90,7 @@ export const Text02B = styled.Text<TextProps & { size?: string }>(
 	({ theme, color, size }) => ({
 		...theme.fonts.bold,
 		fontSize: size ? size : '15px',
+		lineHeight: '20px',
 		color: theme.colors[color ?? 'text'],
 		letterSpacing: 0.4,
 	}),
@@ -95,6 +99,7 @@ export const Text02B = styled.Text<TextProps & { size?: string }>(
 export const Text13S = styled.Text<TextProps>(({ theme, color }) => ({
 	...theme.fonts.regular,
 	fontSize: '13px',
+	lineHeight: '18px',
 	color: theme.colors[color ?? 'text'],
 	letterSpacing: 0.4,
 }));
@@ -102,6 +107,7 @@ export const Text13S = styled.Text<TextProps>(({ theme, color }) => ({
 export const Text13UP = styled.Text<TextProps>(({ theme, color }) => ({
 	...theme.fonts.medium,
 	fontSize: '13px',
+	lineHeight: '18px',
 	textTransform: 'uppercase',
 	color: theme.colors[color ?? 'text'],
 	letterSpacing: 0.4,
@@ -110,6 +116,7 @@ export const Text13UP = styled.Text<TextProps>(({ theme, color }) => ({
 export const Caption13S = styled.Text<TextProps>(({ theme, color }) => ({
 	...theme.fonts.regular,
 	fontSize: '13px',
+	lineHeight: '18px',
 	color: theme.colors[color ?? 'text'],
 	letterSpacing: 0.4,
 }));
@@ -117,6 +124,7 @@ export const Caption13S = styled.Text<TextProps>(({ theme, color }) => ({
 export const Caption13M = styled.Text<TextProps>(({ theme, color }) => ({
 	...theme.fonts.semibold,
 	fontSize: '13px',
+	lineHeight: '18px',
 	color: theme.colors[color ?? 'text'],
 	letterSpacing: 0.4,
 }));
