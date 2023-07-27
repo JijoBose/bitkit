@@ -168,7 +168,7 @@ const WalletsDetail = ({
 
 						<AnimatedView
 							color="transparent"
-							style={[styles.header, { minHeight: height }]}
+							style={[styles.header, { minHeight: height.value }]}
 							onLayout={(e): void => {
 								const hh = e.nativeEvent.layout.height;
 								setHeaderHeight((h) => (h === 0 ? hh : h));
