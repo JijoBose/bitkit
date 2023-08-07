@@ -232,6 +232,7 @@ describe('Remote backups', () => {
 			txType: EPaymentType.received,
 			message: '',
 			address: 'invoice',
+			confirmed: true,
 			value: 1,
 			timestamp: new Date().getTime(),
 		});

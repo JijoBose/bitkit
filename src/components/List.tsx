@@ -200,13 +200,7 @@ const _Item = memo((item: ItemData): ReactElement => {
 
 	if (type === 'draggable') {
 		const { value, onDragEnd } = item as DraggableItem;
-		return (
-			<DraggableList
-				style={styles.draggableList}
-				listData={value}
-				onDragEnd={onDragEnd}
-			/>
-		);
+		return <DraggableList listData={value} onDragEnd={onDragEnd} />;
 	}
 
 	if (type === 'button') {
@@ -349,7 +343,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		borderBottomColor: 'rgba(255, 255, 255, 0.1)',
 		borderBottomWidth: 1,
-		minHeight: 56,
+		minHeight: 55,
 	},
 	itemLarge: {
 		minHeight: 90,
@@ -376,11 +370,8 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 	},
-	draggableList: {
-		marginTop: 14,
-	},
 	sectionSpacing: {
-		marginTop: 36,
+		marginTop: 41,
 	},
 });
 

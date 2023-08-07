@@ -224,24 +224,23 @@ export interface ISubscribeToAddress {
 }
 
 /**
- * Subscribes to the next available addressScriptHash.
+ * Subscribes to a number of address script hashes for receiving.
+ * @param {string[]} scriptHashes
  * @param {TAvailableNetworks} [selectedNetwork]
  * @param {TWalletName} [selectedWallet]
- * @param scriptHashes
- * @param onReceive
  * @return {Promise<Result<string>>}
  */
 export const subscribeToAddresses = async ({
-	selectedNetwork,
-	selectedWallet,
 	scriptHashes = [],
 	onReceive,
+	selectedNetwork,
+	selectedWallet,
 }: {
-	selectedNetwork?: TAvailableNetworks;
-	selectedWallet?: TWalletName;
 	scriptHashes?: string[];
 	onReceive?: () => void;
-}): Promise<Result<string>> => {
+	selectedNetwork?: TAvailableNetworks;
+	selectedWallet?: TWalletName;
+} = {}): Promise<Result<string>> => {
 	if (!selectedNetwork) {
 		selectedNetwork = getSelectedNetwork();
 	}
@@ -257,48 +256,51 @@ export const subscribeToAddresses = async ({
 	// Gather the receiving address scripthash for each address type if no scripthashes were provided.
 	if (!scriptHashes.length) {
 		for (const addressType of addressTypeKeys) {
+			const addresses = currentWallet.addresses[selectedNetwork][addressType];
+			const addressCount = Object.keys(addresses).length;
+
 			// Check if addresses of this type have been generated. If not, skip.
-			const addressCount = Object.keys(
-				currentWallet.addresses[selectedNetwork][addressType],
-			)?.length;
 			if (addressCount > 0) {
-				const addresses = currentWallet.addresses[selectedNetwork][addressType];
 				let addressIndex =
 					currentWallet.addressIndex[selectedNetwork][addressType]?.index;
 				addressIndex = addressIndex > 0 ? addressIndex : 0;
-				const addressesToSubscribeTo = Object.values(addresses).filter(
-					(a) => Math.abs(a.index - addressIndex) <= GAP_LIMIT,
+
+				// Only subscribe up to the gap limit.
+				const addressesInRange = Object.values(addresses).filter(
+					(address) => Math.abs(address.index - addressIndex) <= GAP_LIMIT,
 				);
-				let i = 0;
-				for (const { scriptHash } of addressesToSubscribeTo) {
-					// Only subscribe up to the gap limit.
-					if (i > GAP_LIMIT) {
-						break;
-					}
-					scriptHashes.push(scriptHash);
-					i++;
-				}
+				const addressesToSubscribe = addressesInRange.slice(-GAP_LIMIT);
+				const addressScriptHashes = addressesToSubscribe.map(
+					({ scriptHash }) => scriptHash,
+				);
+
+				scriptHashes.push(...addressScriptHashes);
 			}
 		}
 	}
 
-	// Subscribe to all provided scriphashes.
-	await Promise.all(
-		scriptHashes.map(async (addressScriptHash) => {
-			const subscribeAddressResponse: ISubscribeToAddress =
-				await electrum.subscribeAddress({
-					scriptHash: addressScriptHash,
-					network: selectedNetwork,
-					onReceive: (): void => {
-						refreshWallet();
-						onReceive?.();
-					},
-				});
-			if (subscribeAddressResponse.error) {
-				return err('Unable to subscribe to receiving addresses.');
-			}
-		}),
-	);
+	// Subscribe to all provided script hashes.
+	const promises = scriptHashes.map(async (scriptHash) => {
+		const response: ISubscribeToAddress = await electrum.subscribeAddress({
+			scriptHash,
+			network: selectedNetwork,
+			onReceive: (): void => {
+				refreshWallet();
+				onReceive?.();
+			},
+		});
+		if (response.error) {
+			throw Error('Unable to subscribe to receiving addresses.');
+		}
+	});
+
+	try {
+		await Promise.all(promises);
+	} catch (e) {
+		console.log(e);
+		return err(e);
+	}
+
 	return ok('Successfully subscribed to addresses.');
 };
 
@@ -330,7 +332,7 @@ export const subscribeToHeader = async ({
 	}
 	const subscribeResponse: ISubscribeToHeader = await electrum.subscribeHeader({
 		network: selectedNetwork,
-		onReceive: async (data) => {
+		onReceive: (data) => {
 			const hex = data[0].hex;
 			const hash = getBlockHashFromHex({ blockHex: hex, selectedNetwork });
 			updateHeader({
@@ -722,30 +724,24 @@ const tempElectrumServers: IWalletItem<TCustomElectrumPeerOptionalProtocol[]> =
 /**
  * Connects to the provided electrum peer. Otherwise, it will attempt to connect to a set of default peers.
  * @param {TAvailableNetworks} [selectedNetwork]
- * @param {number} [retryAttempts]
  * @param {ICustomElectrumPeer[]} [customPeers]
  * @param {{ net: undefined, tls: undefined }} [options]
  * @return {Promise<Result<string>>}
  */
 export const connectToElectrum = async ({
-	selectedNetwork,
-	retryAttempts = 2,
 	customPeers,
-	options = { net: undefined, tls: undefined },
+	showNotification = true,
+	selectedNetwork,
 }: {
-	selectedNetwork?: TAvailableNetworks;
-	retryAttempts?: number;
 	customPeers?: TCustomElectrumPeerOptionalProtocol[];
-	options?: { net?: any; tls?: any };
+	showNotification?: boolean;
+	selectedNetwork?: TAvailableNetworks;
 } = {}): Promise<Result<string>> => {
 	if (!selectedNetwork) {
 		selectedNetwork = getSelectedNetwork();
 	}
-	const net = options.net ?? global?.net;
-	// const _tls = options.tls ?? tls;
-	const _tls = options.tls ?? global?.tls;
 
-	//Attempt to disconnect from any old/lingering connections
+	// Attempt to disconnect from any old/lingering connections
 	await electrum.stop({ network: selectedNetwork });
 
 	// Fetch any stored custom peers.
@@ -756,34 +752,22 @@ export const connectToElectrum = async ({
 		customPeers = tempElectrumServers[selectedNetwork];
 	}
 
-	let startResponse = { error: true, data: '' };
-	for (let i = 0; i < retryAttempts; i++) {
-		startResponse = await electrum.start({
-			network: selectedNetwork,
-			customPeers,
-			net,
-			tls: _tls,
-		});
-		if (!startResponse.error) {
-			break;
-		}
+	const { error, data } = await electrum.start({
+		network: selectedNetwork,
+		customPeers,
+		net: global.net,
+		tls: global.tls,
+	});
+
+	if (error) {
+		const msg = data || 'An unknown error occurred.';
+		return err(msg);
 	}
 
-	if (startResponse.error) {
-		//Attempt one more time
-		const { error, data } = await electrum.start({
-			network: selectedNetwork,
-			customPeers,
-			net,
-			tls: _tls,
-		});
-		if (error) {
-			const msg = data || 'An unknown error occurred.';
-			return err(msg);
-		}
-		return ok(data);
-	}
-	return ok(startResponse.data);
+	// Check for any new transactions that we might have missed while disconnected.
+	refreshWallet({ showNotification }).then();
+
+	return ok(data);
 };
 
 /**

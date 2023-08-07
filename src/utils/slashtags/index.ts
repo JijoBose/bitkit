@@ -14,7 +14,11 @@ import {
 	getSelectedNetwork,
 	getSelectedWallet,
 } from '../wallet';
-import { decodeLightningInvoice, waitForLdk } from '../lightning';
+import {
+	decodeLightningInvoice,
+	getClaimedLightningPayments,
+	waitForLdk,
+} from '../lightning';
 import { createLightningInvoice } from '../../store/actions/lightning';
 import { getSettingsStore } from '../../store/helpers';
 import { TAvailableNetworks } from '../networks';
@@ -204,7 +208,7 @@ export const updateSlashPayConfig = debounce(
 			selectedWallet,
 			selectedNetwork,
 		});
-		const invoices = currentLightningNode.invoices[selectedNetwork];
+		const claimedPayments = await getClaimedLightningPayments();
 		const openChannelIds = currentLightningNode.openChannelIds[selectedNetwork];
 
 		// if offline payments are disabled and payment config is empy then do nothing
@@ -250,14 +254,18 @@ export const updateSlashPayConfig = debounce(
 			const currentInvoice =
 				payConfig.find(({ type }) => type === 'lightningInvoice')?.value ?? '';
 
-			// if currentInvoice still in redux store, then we don't need to update it.
-			const currentInvoiceStillUnpaid =
-				currentInvoice &&
-				Object.values(invoices || {}).some((i) => i?.to_str === currentInvoice);
-
 			const decodedInvoice = await decodeLightningInvoice({
 				paymentRequest: currentInvoice,
 			});
+
+			// if currentInvoice still not in react-native-ldk's claimed payments list, then we don't need to update it.
+			const currentInvoiceStillUnpaid =
+				currentInvoice &&
+				decodedInvoice.isOk() &&
+				!claimedPayments.find(
+					(p) => p.payment_hash === decodedInvoice.value.payment_hash,
+				);
+
 			const invoiceNeedsToBeUpdated =
 				!currentInvoice ||
 				!currentInvoiceStillUnpaid ||
@@ -314,7 +322,7 @@ export const updateSlashPayConfig = debounce(
 	5000,
 );
 
-/** Send hypercorse to seeder */
+/** Send hypercores to seeder */
 export const seedDrives = async (slashtag: Slashtag): Promise<boolean> => {
 	// TODO (slashtags) https://github.com/synonymdev/slashtags/issues/56
 	let drives: Hyperdrive[] = [];

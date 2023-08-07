@@ -96,14 +96,10 @@ const styles = StyleSheet.create({
 	},
 	view: {
 		backgroundColor: 'rgba(49, 49, 49, 1)',
-		backdropFilter: 'blur(27.1828px)',
 		alignItems: 'center',
-		shadowColor: colors.black,
 		color: colors.white,
-		shadowOffset: {
-			width: 0,
-			height: 2,
-		},
+		shadowColor: colors.black,
+		shadowOffset: { width: 0, height: 2 },
 		shadowOpacity: 0.25,
 		shadowRadius: 4,
 		elevation: 5,

@@ -177,7 +177,7 @@ const SecuritySettings = ({
 	return (
 		<ThemedView style={styles.container}>
 			<SettingsView
-				title={t('security_title')}
+				title={t('security.title')}
 				listData={settingsListData}
 				showBackNavigation={true}
 				fullHeight={false}

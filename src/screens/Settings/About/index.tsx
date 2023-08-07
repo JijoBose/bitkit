@@ -154,7 +154,7 @@ const About = ({
 		<GlowingBackground bottomRight="brand">
 			<SafeAreaInset type="top" />
 			<NavigationHeader
-				title={t('about_title')}
+				title={t('about.title')}
 				onClosePress={(): void => {
 					navigation.navigate('Wallet');
 				}}

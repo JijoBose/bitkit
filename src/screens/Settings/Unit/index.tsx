@@ -10,15 +10,21 @@ import {
 	UnitSatoshiIcon,
 	UnitFiatIcon,
 } from '../../../styles/icons';
-import { primaryUnitSelector } from '../../../store/reselect/settings';
+import {
+	primaryUnitSelector,
+	selectedCurrencySelector,
+} from '../../../store/reselect/settings';
 import { EUnit } from '../../../store/types/wallet';
+import { useCurrency } from '../../../hooks/displayValues';
 import type { SettingsScreenProps } from '../../../navigation/types';
 
-const BitcoinUnitSettings = ({
+const UnitSettings = ({
 	navigation,
-}: SettingsScreenProps<'BitcoinUnitSettings'>): ReactElement => {
+}: SettingsScreenProps<'UnitSettings'>): ReactElement => {
+	const { fiatSymbol } = useCurrency();
 	const { t } = useTranslation('settings');
-	const selectedBitcoinUnit = useSelector(primaryUnitSelector);
+	const selectedUnit = useSelector(primaryUnitSelector);
+	const selectedCurrency = useSelector(selectedCurrencySelector);
 
 	const currencyListData: IListData[] = useMemo(() => {
 		const units = [
@@ -35,9 +41,9 @@ const BitcoinUnitSettings = ({
 				Icon: UnitSatoshiIcon,
 			},
 			{
-				label: t('general.unit_fiat'),
+				label: selectedCurrency,
 				unit: EUnit.fiat,
-				labelExample: '($1,000)',
+				labelExample: `(${fiatSymbol}1,000)`,
 				Icon: UnitFiatIcon,
 			},
 		];
@@ -47,7 +53,7 @@ const BitcoinUnitSettings = ({
 				title: t('general.unit_display'),
 				data: units.map((unit) => ({
 					title: `${unit.label} ${unit.labelExample}`,
-					value: unit.unit === selectedBitcoinUnit,
+					value: unit.unit === selectedUnit,
 					type: EItemType.button,
 					Icon: unit.Icon,
 					onPress: (): void => {
@@ -58,7 +64,7 @@ const BitcoinUnitSettings = ({
 				})),
 			},
 		];
-	}, [selectedBitcoinUnit, navigation, t]);
+	}, [selectedUnit, selectedCurrency, fiatSymbol, navigation, t]);
 
 	return (
 		<SettingsView
@@ -69,4 +75,4 @@ const BitcoinUnitSettings = ({
 	);
 };
 
-export default memo(BitcoinUnitSettings);
+export default memo(UnitSettings);

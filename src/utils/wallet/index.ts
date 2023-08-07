@@ -117,7 +117,7 @@ export const refreshWallet = async ({
 		await new Promise((resolve) => {
 			InteractionManager.runAfterInteractions(() => resolve(null));
 		});
-		const isConnectedToElectrum = getUiStore().isConnectedToElectrum;
+		const { isConnectedToElectrum } = getUiStore();
 		if (!selectedWallet) {
 			selectedWallet = getSelectedWallet();
 		}

@@ -5,11 +5,12 @@
 	"dev_disabled_title": "Dev Options Disabled",
 	"dev_disabled_message": "Dev options are now disabled throughout the app.",
 	"general_title": "General",
-	"security_title": "Security And Privacy",
+	"security_title": "Security and Privacy",
 	"backup_title": "Back up or Restore",
 	"advanced_title": "Advanced",
 	"about_title": "About",
 	"about": {
+		"title": "About Bitkit",
 		"text": "Bitkit hands you the keys to your money, profile, contacts, and web accounts.\n\nThis <easterEgg>Orange Pill</easterEgg> was carefully crafted by Synonym Software Ltd.",
 		"support": "Support",
 		"report_bug": "Report a bug or contribute",
@@ -33,7 +34,6 @@
 		"unit_display": "Display amounts in",
 		"unit_bitcoin": "Bitcoin",
 		"unit_satoshis": "Satoshis",
-		"unit_fiat": "Local Currency",
 		"speed": "Transaction speed",
 		"speed_title": "Transaction Speed",
 		"speed_default": "Default Transaction Speed",
@@ -52,6 +52,7 @@
 		"reset_confirm": "Yes, Reset"
 	},
 	"security": {
+		"title": "Security And Privacy",
 		"clipboard": "Read clipboard for ease of use",
 		"warn_100": "Warn when sending over $100",
 		"pin": "PIN Code",

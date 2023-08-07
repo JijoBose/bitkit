@@ -38,11 +38,11 @@ import { widgetsSelector } from '../../store/reselect/widgets';
 // https://github.com/software-mansion/react-native-reanimated/issues/4306#issuecomment-1538184321
 const AnimatedRefreshControl = Animated.createAnimatedComponent(RefreshControl);
 
-const Wallets = ({
-	navigation,
-	route,
-}: WalletScreenProps<'Wallets'>): ReactElement => {
-	const { onFocus } = route.params;
+type Props = WalletScreenProps<'Wallets'> & {
+	onFocus: (isFocused: boolean) => void;
+};
+
+const Wallets = ({ navigation, onFocus }: Props): ReactElement => {
 	const [refreshing, setRefreshing] = useState(false);
 	const colors = useColors();
 	const hideBalance = useSelector(hideBalanceSelector);

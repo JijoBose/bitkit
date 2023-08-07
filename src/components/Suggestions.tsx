@@ -105,7 +105,7 @@ const Suggestions = (): ReactElement => {
 					defaultIndex={defaultIndex}
 					loop={false}
 					height={170}
-					width={170}
+					width={167}
 					panGestureHandlerProps={panGestureHandlerProps}
 					onSnapToItem={setIndex}
 					renderItem={({ item }): ReactElement => {

@@ -48,10 +48,10 @@ const GeneralSettings = ({
 						? t('general.unit_bitcoin')
 						: selectedUnit === EUnit.satoshi
 						? t('general.unit_satoshis')
-						: t('general.unit_fiat'),
+						: selectedCurrency,
 				type: EItemType.button,
-				testID: 'BitcoinUnitSettings',
-				onPress: (): void => navigation.navigate('BitcoinUnitSettings'),
+				testID: 'UnitSettings',
+				onPress: (): void => navigation.navigate('UnitSettings'),
 			},
 			{
 				title: t('general.speed'),

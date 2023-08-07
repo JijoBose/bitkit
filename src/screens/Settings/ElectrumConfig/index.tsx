@@ -6,7 +6,7 @@ import Url from 'url-parse';
 import { useTranslation } from 'react-i18next';
 
 import { View, TextInput, ScrollView } from '../../../styles/components';
-import { Text, Text01S, Caption13Up } from '../../../styles/text';
+import { Text01S, Caption13Up } from '../../../styles/text';
 import { ScanIcon } from '../../../styles/icons';
 import { addElectrumPeer } from '../../../store/actions/settings';
 import { TProtocol } from '../../../store/types/settings';
@@ -143,8 +143,10 @@ const ElectrumConfig = ({
 				selectedNetwork,
 				customPeers: [connectData],
 			});
+
+			addElectrumPeer({ selectedNetwork, peer: connectData });
+
 			if (connectResponse.isOk()) {
-				addElectrumPeer({ selectedNetwork, peer: connectData });
 				updateUi({ isConnectedToElectrum: true });
 				showToast({
 					type: 'success',
@@ -244,13 +246,13 @@ const ElectrumConfig = ({
 				<View style={styles.row}>
 					<View style={styles.connectedPeer} testID="Status">
 						{connectedPeer ? (
-							<Text color="green" testID="Connected">
+							<Text01S color="green" testID="Connected">
 								{connectedPeer.host}:{connectedPeer.port}
-							</Text>
+							</Text01S>
 						) : (
-							<Text color="red" testID="Disconnected">
+							<Text01S color="red" testID="Disconnected">
 								{t('es.disconnected')}
-							</Text>
+							</Text01S>
 						)}
 					</View>
 				</View>
@@ -349,8 +351,7 @@ const styles = StyleSheet.create({
 	row: {
 		flexDirection: 'row',
 		alignItems: 'flex-start',
-		paddingTop: 5,
-		paddingBottom: 8,
+		paddingBottom: 16,
 		justifyContent: 'center',
 	},
 	label: {
@@ -361,7 +362,7 @@ const styles = StyleSheet.create({
 		flex: 1.5,
 	},
 	textInput: {
-		minHeight: 50,
+		minHeight: 52,
 		marginTop: 5,
 	},
 	protocol: {

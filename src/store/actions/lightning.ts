@@ -9,10 +9,13 @@ import {
 	addPeers,
 	createPaymentRequest,
 	getClaimableBalance,
+	getClaimedLightningPayments,
 	getCustomLightningPeers,
 	getLightningChannels,
 	getNodeIdFromStorage,
 	getNodeVersion,
+	getPendingInvoice,
+	getSentLightningPayments,
 	hasOpenLightningChannels,
 	parseUri,
 } from '../../utils/lightning';
@@ -21,7 +24,9 @@ import {
 	TCreateLightningInvoice,
 	TLightningNodeVersion,
 } from '../types/lightning';
-import { TWalletName } from '../types/wallet';
+import { EPaymentType, TWalletName } from '../types/wallet';
+import { EActivityType, TLightningActivityItem } from '../types/activity';
+import { getActivityItemById } from '../../utils/activity';
 
 const dispatch = getDispatch();
 
@@ -216,133 +221,7 @@ export const createLightningInvoice = async ({
 
 	addPeers({ selectedNetwork, selectedWallet }).then();
 
-	const payload = {
-		invoice: invoice.value,
-		selectedWallet,
-		selectedNetwork,
-	};
-	dispatch({
-		type: actions.ADD_LIGHTNING_INVOICE,
-		payload,
-	});
 	return ok(invoice.value);
-};
-
-/**
- * Filters out and removes expired invoices from the invoices array
- * @param {TAvailableNetworks} [selectedNetwork]
- * @param {TWalletName} [selectedWallet]
- * @returns {Promise<Result<string>>}
- */
-export const removeExpiredLightningInvoices = async ({
-	selectedNetwork,
-	selectedWallet,
-}: {
-	selectedNetwork?: TAvailableNetworks;
-	selectedWallet?: TWalletName;
-}): Promise<Result<string>> => {
-	if (!selectedNetwork) {
-		selectedNetwork = getSelectedNetwork();
-	}
-	if (!selectedWallet) {
-		selectedWallet = getSelectedWallet();
-	}
-	const payload = {
-		selectedWallet,
-		selectedNetwork,
-	};
-	dispatch({
-		type: actions.REMOVE_EXPIRED_LIGHTNING_INVOICES,
-		payload,
-	});
-	return ok('');
-};
-
-/**
- * Removes a lightning invoice from the invoices array via its payment hash.
- * @param {string} paymentHash
- * @param {TAvailableNetworks} [selectedNetwork]
- * @param {TWalletName} [selectedWallet]
- * @returns {Promise<Result<string>>}
- */
-export const removeLightningInvoice = async ({
-	paymentHash,
-	selectedNetwork,
-	selectedWallet,
-}: {
-	paymentHash: string;
-	selectedNetwork?: TAvailableNetworks;
-	selectedWallet?: TWalletName;
-}): Promise<Result<string>> => {
-	if (!paymentHash) {
-		return err('No payment hash provided.');
-	}
-	if (!selectedNetwork) {
-		selectedNetwork = getSelectedNetwork();
-	}
-	if (!selectedWallet) {
-		selectedWallet = getSelectedWallet();
-	}
-	const payload = {
-		paymentHash,
-		selectedWallet,
-		selectedNetwork,
-	};
-	dispatch({
-		type: actions.REMOVE_LIGHTNING_INVOICE,
-		payload,
-	});
-	return ok('Successfully removed lightning invoice.');
-};
-
-/**
- * Adds a paid lightning invoice to the payments object for future reference.
- * @param {TInvoice} invoice
- * @param {TAvailableNetworks} [selectedNetwork]
- * @param {TWalletName} [selectedWallet]
- * @returns {Result<string>}
- */
-export const addLightningPayment = ({
-	invoice,
-	selectedNetwork,
-	selectedWallet,
-}: {
-	invoice: TInvoice;
-	selectedNetwork?: TAvailableNetworks;
-	selectedWallet?: TWalletName;
-}): Result<string> => {
-	if (!invoice) {
-		return err('No payment invoice provided.');
-	}
-	if (!selectedNetwork) {
-		selectedNetwork = getSelectedNetwork();
-	}
-	if (!selectedWallet) {
-		selectedWallet = getSelectedWallet();
-	}
-	const lightningPayments =
-		getLightningStore().nodes[selectedWallet].payments[selectedNetwork];
-
-	// It's possible ldk.pay returned true for an invoice we already paid.
-	// Run another check here.
-	if (invoice.payment_hash in lightningPayments) {
-		return err('Lightning invoice has already been paid.');
-	}
-	const payload = {
-		invoice,
-		selectedWallet,
-		selectedNetwork,
-	};
-	dispatch({
-		type: actions.ADD_LIGHTNING_PAYMENT,
-		payload,
-	});
-	removeLightningInvoice({
-		paymentHash: invoice.payment_hash,
-		selectedNetwork,
-		selectedWallet,
-	}).then();
-	return ok('Successfully added lightning payment.');
 };
 
 /*
@@ -472,4 +351,65 @@ export const updateClaimableBalance = async ({
 		payload,
 	});
 	return ok('Successfully Updated Claimable Balance.');
+};
+
+export const syncLightningTxsWithActivityList = async (): Promise<
+	Result<string>
+> => {
+	let items: TLightningActivityItem[] = [];
+
+	const claimedTxs = await getClaimedLightningPayments();
+	for (const tx of claimedTxs) {
+		//Required to add in bolt11 and description
+		const invoice = await getPendingInvoice(tx.payment_hash);
+
+		items.push({
+			id: tx.payment_hash,
+			activityType: EActivityType.lightning,
+			txType: EPaymentType.received,
+			message: invoice?.description ?? '',
+			address: invoice?.to_str ?? '',
+			confirmed: tx.state === 'successful',
+			value: tx.amount_sat,
+			timestamp: tx.unix_timestamp * 1000,
+		});
+	}
+
+	const sentTxs = await getSentLightningPayments();
+	for (const tx of sentTxs) {
+		const sats = tx.amount_sat;
+		if (!sats) {
+			continue;
+		}
+
+		items.push({
+			id: tx.payment_hash,
+			activityType: EActivityType.lightning,
+			txType: EPaymentType.sent,
+			message: '',
+			address: '',
+			confirmed: tx.state === 'successful',
+			value: -sats,
+			timestamp: tx.unix_timestamp * 1000,
+		});
+	}
+
+	//TODO remove temp hack when this is complete and descriptions/bolt11 can be added from stored tx: https://github.com/synonymdev/react-native-ldk/issues/156
+	items.forEach((item) => {
+		const res = getActivityItemById(item.id);
+		if (res.isOk()) {
+			const existingItem = res.value;
+			if (existingItem.activityType === EActivityType.lightning) {
+				item.message = existingItem.message;
+				item.address = existingItem.address;
+			}
+		}
+	});
+
+	dispatch({
+		type: actions.UPDATE_ACTIVITY_ITEMS,
+		payload: items,
+	});
+
+	return ok('Stored lightning transactions synced with activity list.');
 };

@@ -17,7 +17,7 @@ import AddressTypePreference from '../../screens/Settings/AddressTypePreference'
 import DevSettings from '../../screens/Settings/DevSettings';
 import AddressViewer from '../../screens/Settings/AddressViewer';
 import LightningNodeInfo from '../../screens/Settings/Lightning/LightningNodeInfo';
-import BitcoinUnitSettings from '../../screens/Settings/BitcoinUnit';
+import UnitSettings from '../../screens/Settings/Unit';
 import TransactionSpeedSettings from '../../screens/Settings/TransactionSpeed';
 import CustomFee from '../../screens/Settings/TransactionSpeed/CustomFee';
 import AuthCheck from '../../components/AuthCheck';
@@ -68,7 +68,7 @@ export type SettingsStackParamList = {
 	AboutSettings: undefined;
 	EasterEgg: undefined;
 	CurrenciesSettings: undefined;
-	BitcoinUnitSettings: undefined;
+	UnitSettings: undefined;
 	TransactionSpeedSettings: undefined;
 	CustomFee: undefined;
 	ElectrumConfig: undefined;
@@ -120,10 +120,7 @@ const SettingsNavigator = (): ReactElement => {
 			<Stack.Screen name="AboutSettings" component={AboutSettings} />
 			<Stack.Screen name="EasterEgg" component={EasterEgg} />
 			<Stack.Screen name="CurrenciesSettings" component={CurrenciesSettings} />
-			<Stack.Screen
-				name="BitcoinUnitSettings"
-				component={BitcoinUnitSettings}
-			/>
+			<Stack.Screen name="UnitSettings" component={UnitSettings} />
 			<Stack.Screen
 				name="TransactionSpeedSettings"
 				component={TransactionSpeedSettings}

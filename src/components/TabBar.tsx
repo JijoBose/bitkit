@@ -81,7 +81,7 @@ const TabBar = ({
 				activeOpacity={0.8}
 				testID="Send"
 				onPress={onSendPress}>
-				<BlurView style={styles.send}>
+				<BlurView style={[styles.blur, styles.send]}>
 					<SvgXml xml={sendXml} width={13} height={13} />
 					<Text02M style={styles.tabText}>{t('send')}</Text02M>
 				</BlurView>
@@ -98,7 +98,7 @@ const TabBar = ({
 				activeOpacity={0.8}
 				testID="Receive"
 				onPress={onReceivePress}>
-				<BlurView style={styles.receive}>
+				<BlurView style={[styles.blur, styles.receive]}>
 					<SvgXml xml={receiveXml} width={13} height={13} />
 					<Text02M style={styles.tabText}>{t('receive')}</Text02M>
 				</BlurView>
@@ -121,22 +121,24 @@ const styles = StyleSheet.create({
 	blurContainer: {
 		height: 56,
 		flex: 1,
+		shadowColor: 'black',
+		shadowOpacity: 0.8,
+		shadowRadius: 15,
+		shadowOffset: { width: 1, height: 13 },
+	},
+	blur: {
+		flex: 1,
+		alignItems: 'center',
+		justifyContent: 'center',
+		flexDirection: 'row',
+		borderRadius: 30,
+		elevation: 6,
 	},
 	send: {
-		flex: 1,
-		alignItems: 'center',
-		justifyContent: 'center',
-		flexDirection: 'row',
 		paddingRight: 30,
-		borderRadius: 30,
 	},
 	receive: {
-		flex: 1,
-		alignItems: 'center',
-		justifyContent: 'center',
-		flexDirection: 'row',
 		paddingLeft: 30,
-		borderRadius: 30,
 	},
 	tabScan: {
 		height: 80,

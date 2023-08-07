@@ -47,8 +47,8 @@ import {
 } from '../../store/helpers';
 import { defaultHeader } from '../../store/shapes/wallet';
 import {
-	addLightningPayment,
 	removePeer,
+	syncLightningTxsWithActivityList,
 	updateClaimableBalance,
 	updateLightningChannels,
 	updateLightningNodeId,
@@ -123,7 +123,7 @@ export const wipeLdkStorage = async ({
 			if (item.isFile()) {
 				await RNFS.unlink(item.path);
 			} else {
-				deleteAllFiles(item.path);
+				await deleteAllFiles(item.path);
 			}
 		}
 	};
@@ -284,37 +284,14 @@ export const restartLdk = async (): Promise<Result<string>> => {
 
 /**
  * Retrieves any pending/unpaid invoices from the invoices array via payment hash.
+ * TODO replace this function once this is complete https://github.com/synonymdev/react-native-ldk/issues/152
  * @param {string} paymentHash
  * @param {TWalletName} [selectedWallet]
  * @param {TAvailableNetworks} [selectedNetwork]
  */
-export const getPendingInvoice = ({
-	paymentHash,
-	selectedWallet,
-	selectedNetwork,
-}: {
-	paymentHash: string;
-	selectedWallet?: TWalletName;
-	selectedNetwork?: TAvailableNetworks;
-}): Result<TInvoice> => {
-	try {
-		if (!selectedWallet) {
-			selectedWallet = getSelectedWallet();
-		}
-		if (!selectedNetwork) {
-			selectedNetwork = getSelectedNetwork();
-		}
-		const invoices =
-			getLightningStore().nodes[selectedWallet].invoices[selectedNetwork];
-		const invoice = invoices.filter((inv) => inv.payment_hash === paymentHash);
-		if (invoice.length > 0) {
-			return ok(invoice[0]);
-		}
-		return err('Unable to find any pending invoices.');
-	} catch (e) {
-		return err(e);
-	}
-};
+export const getPendingInvoice = (
+	paymentHash: string,
+): Promise<TInvoice | undefined> => lm.getInvoiceFromPaymentHash(paymentHash);
 
 export const handleLightningPaymentSubscription = async ({
 	payment,
@@ -331,36 +308,40 @@ export const handleLightningPaymentSubscription = async ({
 	if (!selectedNetwork) {
 		selectedNetwork = getSelectedNetwork();
 	}
-	console.log('Receiving Lightning Payment...', payment);
-	const invoice = getPendingInvoice({
-		paymentHash: payment.payment_hash,
-		selectedNetwork,
-		selectedWallet,
-	});
-	if (invoice.isOk()) {
-		const activityItem: TLightningActivityItem = {
-			id: invoice.value.payment_hash,
-			activityType: EActivityType.lightning,
-			txType: EPaymentType.received,
-			message: invoice.value.description ?? '',
-			address: invoice.value.to_str,
-			value: payment.amount_sat,
-			// TODO: show fee?
-			// fee: 0,
-			// feeRate: 0,
-			timestamp: new Date().getTime(),
-		};
-		addActivityItem(activityItem);
-		showBottomSheet('newTxPrompt', { activityItem });
-		closeBottomSheet('receiveNavigation');
-		addLightningPayment({
-			invoice: invoice.value,
-			selectedWallet,
-			selectedNetwork,
-		});
-		await refreshLdk({ selectedWallet, selectedNetwork });
-		updateSlashPayConfig({ sdk, selectedWallet, selectedNetwork });
+	const invoice = await getPendingInvoice(payment.payment_hash);
+
+	let message = '';
+	let address = '';
+
+	//If we have the invoice add those details to the activity item for instant display
+	//If we don't have the invoice we can still add details and show received animation
+	if (invoice) {
+		message = invoice.description ?? '';
+		address = invoice.to_str;
+	} else {
+		//Unlikely to happen and not really a problem if it does
+		console.error(
+			"Couldn't find invoice for claimed payment: ",
+			payment.payment_hash,
+		);
 	}
+
+	const activityItem: TLightningActivityItem = {
+		id: payment.payment_hash,
+		activityType: EActivityType.lightning,
+		txType: EPaymentType.received,
+		message,
+		address,
+		value: payment.amount_sat,
+		confirmed: true,
+		timestamp: new Date().getTime(),
+	};
+	addActivityItem(activityItem);
+	showBottomSheet('newTxPrompt', { activityItem });
+	closeBottomSheet('receiveNavigation');
+
+	await refreshLdk({ selectedWallet, selectedNetwork });
+	updateSlashPayConfig({ sdk, selectedWallet, selectedNetwork });
 };
 
 /**
@@ -482,9 +463,14 @@ export const refreshLdk = async ({
 		if (syncRes.isErr()) {
 			return err(syncRes.error.message);
 		}
-		await addPeers({ selectedNetwork, selectedWallet });
-		await updateLightningChannels({ selectedWallet, selectedNetwork });
+
+		await Promise.all([
+			addPeers({ selectedNetwork, selectedWallet }),
+			updateLightningChannels({ selectedWallet, selectedNetwork }),
+		]);
 		await updateClaimableBalance({ selectedNetwork, selectedWallet });
+		await syncLightningTxsWithActivityList();
+
 		return ok('');
 	} catch (e) {
 		console.log(e);
@@ -1140,7 +1126,7 @@ export const closeAllChannels = async ({
  */
 export const createPaymentRequest = (
 	req: TCreatePaymentReq,
-): Promise<Result<TInvoice>> => ldk.createPaymentRequest(req);
+): Promise<Result<TInvoice>> => lm.createAndStorePaymentRequest(req);
 
 /**
  * Attempts to pay a bolt11 invoice.
@@ -1172,12 +1158,7 @@ export const payLightningInvoice = async (
 		if (payResponse.isErr()) {
 			return err(payResponse.error.message);
 		}
-		const addLightningPaymentResponse = addLightningPayment({
-			invoice: decodedInvoice.value,
-		});
-		if (addLightningPaymentResponse.isErr()) {
-			return err(addLightningPaymentResponse.error.message);
-		}
+
 		let value = decodedInvoice.value.amount_satoshis ?? 0;
 		if (sats) {
 			value = sats;
@@ -1188,12 +1169,12 @@ export const payLightningInvoice = async (
 			txType: EPaymentType.sent,
 			message: decodedInvoice.value.description ?? '',
 			address: invoice,
-			value: -value,
-			// TODO: show fee?
-			// fee: payResponse.value.fee_paid_sat,
-			// feeRate: 0,
+			value,
+			confirmed: true,
+			fee: payResponse.value.fee_paid_sat ?? 0,
 			timestamp: new Date().getTime(),
 		};
+		//TODO rather sync with ldk for txs
 		addActivityItem(activityItem);
 		refreshLdk().then();
 		return ok(payResponse.value);
@@ -1202,6 +1183,14 @@ export const payLightningInvoice = async (
 		return err(e);
 	}
 };
+
+export const getClaimedLightningPayments = async (): Promise<
+	TChannelManagerClaim[]
+> => lm.getLdkPaymentsClaimed();
+
+export const getSentLightningPayments = async (): Promise<
+	TChannelManagerPaymentSent[]
+> => lm.getLdkPaymentsSent();
 
 export const decodeLightningInvoice = ({
 	paymentRequest,

@@ -6,8 +6,6 @@ export const defaultLightningShape: IDefaultLightningShape = {
 	info: getNetworkContent({}),
 	channels: getNetworkContent({}),
 	openChannelIds: getNetworkContent([]),
-	invoices: getNetworkContent([]),
-	payments: getNetworkContent({}),
 	peers: getNetworkContent([]),
 	claimableBalance: getNetworkContent(0),
 };

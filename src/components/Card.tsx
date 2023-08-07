@@ -36,11 +36,6 @@ const styles = StyleSheet.create({
 		marginVertical: 10,
 		paddingVertical: 10,
 		paddingHorizontal: 20,
-		shadowColor: 'rgba(0, 0, 0, 0.1)',
-		shadowOpacity: 0.9,
-		elevation: 6,
-		shadowRadius: 8,
-		shadowOffset: { width: 0, height: 0 },
 	},
 });
 

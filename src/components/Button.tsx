@@ -109,11 +109,12 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 		flexDirection: 'row',
-		shadowColor: 'rgba(0, 0, 0, 0.1)',
-		shadowOpacity: 0.8,
-		elevation: 6,
-		shadowRadius: 15,
-		shadowOffset: { width: 1, height: 13 },
+		// TODO: shadows are not drawn correctly on transparent buttons
+		// shadowColor: 'rgba(0, 0, 0, 0.1)',
+		// shadowOpacity: 0.8,
+		// elevation: 6,
+		// shadowRadius: 15,
+		// shadowOffset: { width: 1, height: 13 },
 	},
 	buttonSmall: {
 		height: 40,
@@ -139,11 +140,6 @@ const styles = StyleSheet.create({
 		borderRadius: 54,
 		paddingVertical: 12,
 		paddingHorizontal: 16,
-		shadowColor: 'rgba(0, 0, 0, 0.1)',
-		shadowOpacity: 0.8,
-		elevation: 6,
-		shadowRadius: 15,
-		shadowOffset: { width: 1, height: 13 },
 	},
 });
 

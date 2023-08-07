@@ -4,17 +4,7 @@ import { __E2E__, __ENABLE_LDK_LOGS__ } from '../constants/env';
 if (__DEV__) {
 	const ignoredLogs: string[] = [];
 	const ignoredInfo: string[] = [];
-	const ignoredWarnings: string[] = [
-		'Require cycle',
-		// TEMP: ignore <Dialog /> warning on iOS
-		'Modal with',
-		// https://reactnavigation.org/docs/troubleshooting/#i-get-the-warning-non-serializable-values-were-found-in-the-navigation-state
-		'Non-serializable values were found in the navigation state',
-		// we have react-native-draggable-flatlist inside <ScrollView /> on main screen
-		// unfortunalty, there is not good way to hide this error yet
-		// https://github.com/computerjazz/react-native-draggable-flatlist/issues/422
-		'VirtualizedLists should never be nested inside plain ScrollViews',
-	];
+	const ignoredWarnings: string[] = ['Require cycle'];
 	const ignoredErrors: string[] = [];
 
 	// disable all logs for E2E tests running in debug mode

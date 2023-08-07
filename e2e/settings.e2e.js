@@ -72,17 +72,17 @@ d('Settings', () => {
 			// switch to Bitcoins
 			await element(by.id('Settings')).tap();
 			await element(by.id('GeneralSettings')).tap();
-			await element(by.id('BitcoinUnitSettings')).tap();
+			await element(by.id('UnitSettings')).tap();
 			await element(by.id('Bitcoin')).tap();
 			await expect(
-				element(by.id('Value').withAncestor(by.id('BitcoinUnitSettings'))),
+				element(by.id('Value').withAncestor(by.id('UnitSettings'))),
 			).toHaveText('Bitcoin');
 
 			// switch back to Satoshis
-			await element(by.id('BitcoinUnitSettings')).tap();
+			await element(by.id('UnitSettings')).tap();
 			await element(by.id('Satoshis')).tap();
 			await expect(
-				element(by.id('Value').withAncestor(by.id('BitcoinUnitSettings'))),
+				element(by.id('Value').withAncestor(by.id('UnitSettings'))),
 			).toHaveText('Satoshis');
 			markComplete('settings-2');
 		});

@@ -40,11 +40,11 @@ const WalletsStack = ({
 	return (
 		<>
 			<Stack.Navigator screenOptions={screenOptions}>
-				<Stack.Screen
-					name="Wallets"
-					component={WalletsScreen}
-					initialParams={{ onFocus: setIsFocused }}
-				/>
+				<Stack.Screen name="Wallets">
+					{(props): ReactElement => (
+						<WalletsScreen {...props} onFocus={setIsFocused} />
+					)}
+				</Stack.Screen>
 				<Stack.Screen name="WalletsDetail" component={WalletsDetail} />
 				<Stack.Screen name="ActivityFiltered" component={ActivityFiltered} />
 			</Stack.Navigator>

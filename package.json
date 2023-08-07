@@ -56,7 +56,7 @@
     "@sayem314/react-native-keep-awake": "^1.2.0",
     "@shopify/react-native-skia": "0.1.197",
     "@synonymdev/blocktank-client": "0.0.50",
-    "@synonymdev/react-native-ldk": "^0.0.102",
+    "@synonymdev/react-native-ldk": "^0.0.103",
     "@synonymdev/react-native-lnurl": "0.0.5",
     "@synonymdev/result": "0.0.2",
     "@synonymdev/slashtags-auth": "^1.0.0-alpha.5",
