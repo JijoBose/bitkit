@@ -74,9 +74,9 @@ PODS:
     - hermes-engine/Pre-built (= 0.72.3)
   - hermes-engine/Pre-built (0.72.3)
   - libevent (2.1.12)
-  - lottie-ios (3.4.4)
-  - lottie-react-native (5.1.6):
-    - lottie-ios (~> 3.4.0)
+  - lottie-ios (4.2.0)
+  - lottie-react-native (6.1.2):
+    - lottie-ios (~> 4.2.0)
     - React-Core
   - MMKV (1.3.0):
     - MMKVCore (~> 1.3.0)
@@ -415,7 +415,7 @@ PODS:
     - RCTTypeSafety
     - React-Core
     - ReactCommon/turbomodule/core
-  - react-native-skia (0.1.197):
+  - react-native-skia (0.1.200):
     - React
     - React-callinvoker
     - React-Core
@@ -532,7 +532,7 @@ PODS:
     - React-jsi (= 0.72.3)
     - React-logger (= 0.72.3)
     - React-perflogger (= 0.72.3)
-  - ReactNativeCameraKit (14.0.0-beta8):
+  - ReactNativeCameraKit (14.0.0-beta11):
     - React-Core
   - RNCClipboard (1.11.2):
     - React-Core
@@ -559,7 +559,7 @@ PODS:
     - React-Core
   - RNReactNativeHapticFeedback (1.14.0):
     - React-Core
-  - RNReanimated (3.4.1):
+  - RNReanimated (3.4.2):
     - DoubleConversion
     - FBLazyVector
     - glog
@@ -588,7 +588,7 @@ PODS:
     - React-RCTText
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNScreens (3.23.0):
+  - RNScreens (3.24.0):
     - React-Core
     - React-RCTImage
   - RNShare (8.2.2):
@@ -907,8 +907,8 @@ SPEC CHECKSUMS:
   glog: 04b94705f318337d7ead9e6d17c019bd9b1f6b1b
   hermes-engine: 10fbd3f62405c41ea07e71973ea61e1878d07322
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
-  lottie-ios: 8f97d3271e155c2d688875c29cd3c74908aef5f8
-  lottie-react-native: 8f9d4be452e23f6e5ca0fdc11669dc99ab52be81
+  lottie-ios: 809ecf2d460ed650a6aed7aa88b2ec45fab4779c
+  lottie-react-native: 3d6f1b0db1fd9e18b92af1fbfbf67037611bae67
   MMKV: 9c6c3fa4ddd849f28c7b9a5c9d23aab84f14ee35
   MMKVCore: 9bb7440b170181ac5b81f542ac258103542e693d
   nodejs-mobile-react-native: e35e7ed7ecfca168f168983e9557f1c5278d864b
@@ -941,7 +941,7 @@ SPEC CHECKSUMS:
   react-native-randombytes: 421f1c7d48c0af8dbcd471b0324393ebf8fe7846
   react-native-restart: 7595693413fe3ca15893702f2c8306c62a708162
   react-native-safe-area-context: f5549f36508b1b7497434baa0cd97d7e470920d4
-  react-native-skia: e2cb3443442bf7680e3276dc82cd87c97f96b6f9
+  react-native-skia: d0b0aab6bb1f146eb6f379fb671b719deabd20fb
   react-native-tcp-socket: c1b7297619616b4c9caae6889bcb0aba78086989
   React-NativeModulesApple: c57f3efe0df288a6532b726ad2d0322a9bf38472
   React-perflogger: 6bd153e776e6beed54c56b0847e1220a3ff92ba5
@@ -960,7 +960,7 @@ SPEC CHECKSUMS:
   React-runtimescheduler: 837c1bebd2f84572db17698cd702ceaf585b0d9a
   React-utils: bcb57da67eec2711f8b353f6e3d33bd8e4b2efa3
   ReactCommon: 3ccb8fb14e6b3277e38c73b0ff5e4a1b8db017a9
-  ReactNativeCameraKit: 7d6d5a285b0eee40ad119cb23d8c7e95f06baad7
+  ReactNativeCameraKit: 5c9b3d2366199b6d6d4a1a72c13d78fff7296332
   RNCClipboard: 3f0451a8100393908bea5c5c5b16f96d45f30bfc
   RNDeviceInfo: 475a4c447168d0ad4c807e48ef5e0963a0f4eb1b
   RNExitApp: c4e052df2568b43bec8a37c7cd61194d4cfee2c3
@@ -973,8 +973,8 @@ SPEC CHECKSUMS:
   RNQuickAction: 6d404a869dc872cde841ad3147416a670d13fa93
   RNRate: ef3bcff84f39bb1d1e41c5593d3eea4aab2bd73a
   RNReactNativeHapticFeedback: 1e3efeca9628ff9876ee7cdd9edec1b336913f8c
-  RNReanimated: 53ca20eee770c41173703f5948cd8898aa08262c
-  RNScreens: 6a8a3c6b808aa48dca1780df7b73ea524f602c63
+  RNReanimated: 726395a2fa2f04cea340274ba57a4e659bc0d9c1
+  RNScreens: b21dc57dfa2b710c30ec600786a3fc223b1b92e7
   RNShare: d82e10f6b7677f4b0048c23709bd04098d5aee6c
   RNSVG: d7d7bc8229af3842c9cfc3a723c815a52cdd1105
   RNZipArchive: 68a0c6db4b1c103f846f1559622050df254a3ade
